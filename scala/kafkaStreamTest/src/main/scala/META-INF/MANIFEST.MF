@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Class-Path: lib\spark-streaming_2.10-1.3.0.jar lib\spark-streaming-kaf
+ ka-assembly_2.10-1.3.0.jar lib\PullClient.jar lib\spark-core_2.10-1.3
+ .0.jar
+Main-Class: lzTest.KafkaStreamTest
