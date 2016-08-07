@@ -1,0 +1,53 @@
+# User files #
+###################
+*.suo
+*.user
+*.csproj.user
+*.iml
+*.VC.*
+
+# Compiled source #
+###################
+*.class
+*.dll
+*.exe
+
+# Packages #
+############
+# it's better to unpack these files and commit the raw source
+# git has its own built in compression methods
+*.gz
+*.jar
+*.tar
+*.nupkg
+
+# Folders #
+############
+**/bin/
+**/obj/
+**/packages/
+**/target/
+**/.idea/
+**/x64/
+**/debug/
+**/release/
+**/TestResults/
+scala/dependency-reduced-pom.xml
+build/runtime/
+build/tools/
+build/examples/
+build/dependencies/
+*.log
+lib/
+
+# Generated Files #
+############
+SparkCLRCodeCoverage.xml
+AdapterTestCoverage.xml
+TestResult.xml
+csharp/SparkCLR.compiled.nuspec
+
+# Office Doc Temp files #
+#########################
+docs/~$SparkCLR.pptx
+docs/~$arkCLR.docx
