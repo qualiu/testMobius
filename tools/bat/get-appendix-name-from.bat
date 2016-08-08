@@ -4,5 +4,5 @@ call %~dp0..\check-set-tool-path.bat || exit /b 1
 echo ## %* | findstr /I /R "[0-9a-z]" >nul || (echo No input args of submit options, exit %0  && exit /b 1)
 rem append AppNameAppendix to application name to be obvious in cluster page. curent AppNameAppendix=%AppNameAppendix%
 :: set AppNameAppendix=
-for /F "tokens=*" %%a in ('echo %* ^| lzmw -it "--([a-z])\w*-(\w)\S*\s+(\d+\w?)\w*" -o "-$1$2-$3" -PAC ^| lzmw -it "--\S+\s+\S+(\s*\w+)" -o "" -PAC -a ^| lzmw -t "\s+" -o "_" -PAC ^| lzmw -t "^_|_\s*$" -o "" -PAC ') do ( set AppNameAppendix=%%a && exit /b 0)
+for /F "tokens=*" %%a in ('echo %* ^|lzmw -it "(?:^|\s+)--([a-z])\w*-(\w)\S*\s+(\d+\w?)\w*" -o "-$1$2-$3\n" -PAC ^| lzmw -it "(^|\s+)-\w{1,3}-\d+\w*" -PAC ^| lzmw -S -t "\s+" -o "_" -PAC ^| lzmw -t "^_|_\s*$" -o "" -PAC ') do ( set "AppNameAppendix=%%a" && exit /b 0)
 exit /b 1
