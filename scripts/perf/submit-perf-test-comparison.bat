@@ -18,7 +18,7 @@ if "%~1" == "" (
     echo set MobiusJarDir=d:\mobius\perf-lz\dependencies
     echo set OldPerfAppName=org-perf 
     echo set NewPerfAppName=new-perf
-    exit /b 0
+    exit /b 5
 )
 
 set PerfRunCount=%1

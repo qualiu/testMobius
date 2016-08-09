@@ -15,16 +15,16 @@ call %CommonToolDir%\set-local-sparkCLR-env.bat %MobiusCodeRoot% || exit /b 1
 
 call %CommonToolDir%\bat\check-exist-path.bat %SPARKCLR_HOME%\scripts\sparkclr-submit.cmd || exit /b 1
 call %CommonToolDir%\bat\check-exist-path.bat %ExePath% ExePath || exit /b 1
-call %CommonToolDir%\bat\check-exist-path.bat %ExeDir% ExeDir" || exit /b 1
+call %CommonToolDir%\bat\check-exist-path.bat %ExeDir% ExeDir || exit /b 1
 
 set AllArgs=%*
-if "%1" == "" (
+if "%~1" == "" (
     echo No parameter, Usage as following, run : %ExePath%
     call %ExePath%
     echo.
     echo Example-1 : %0 WindowSlideTest -Topics test -d 1 -w 5 -s 1
     echo Example-2 : %0 WindowSlideTest -d 1 -Topics test  2^>^&1 ^| lzmw -it "args.\d+|sumcount|exception"
-    exit /b 0
+    exit /b 5
 )
 
 if "%2" == "" (  call %ExePath% %1 & exit /b 0 )

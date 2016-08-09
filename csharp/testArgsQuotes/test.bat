@@ -10,18 +10,18 @@ for %%a in ("%ExePath%") do (
 )
 
 set CommonToolDir=%ShellDir%\..\..\tools
-call %CommonToolDir%\bat\check-exist-path.bat "%MobiusCodeRoot%" MobiusCodeRoot || exit /b 1
-call %CommonToolDir%\set-local-sparkCLR-env.bat %MobiusCodeRoot% || exist /b 1
+call %CommonToolDir%\bat\check-exist-path.bat %MobiusCodeRoot% MobiusCodeRoot || exit /b 1
+call %CommonToolDir%\set-local-sparkCLR-env.bat %MobiusCodeRoot% || exit /b 1
 
 call %CommonToolDir%\bat\check-exist-path.bat %SPARKCLR_HOME%\scripts\sparkclr-submit.cmd "sparkclr-submit.cmd" || exit /b 1
-call %CommonToolDir%\bat\check-exist-path.bat %ExePath% "ExePath" || exit /b 1
-call %CommonToolDir%\bat\check-exist-path.bat %ExeDir% "ExeDir" || exit /b 1
+call %CommonToolDir%\bat\check-exist-path.bat %ExePath% ExePath || exit /b 1
+call %CommonToolDir%\bat\check-exist-path.bat %ExeDir% ExeDir || exit /b 1
 
 set AllArgs=%*
-if "%1" == "" (
+if "%~1" == "" (
     echo No parameter, Usage as following, run : %ExePath%
     call %ExePath%
-    exit /b 0
+    exit /b 5
 )
 
 pushd %ExeDir%

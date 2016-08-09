@@ -8,9 +8,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "testArgsQuotes", "testArgsQ
 		{82C9D3B2-E4FB-4713-B980-948C1E96A10A} = {82C9D3B2-E4FB-4713-B980-948C1E96A10A}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adapter", "%MobiusCodeRoot%\csharp\Adapter\Microsoft.Spark.CSharp\Adapter.csproj", "{CE999A96-F42B-4E80-B208-709D7F49A77C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adapter", "d:\msgit\orgMobius\csharp\Adapter\Microsoft.Spark.CSharp\Adapter.csproj", "{CE999A96-F42B-4E80-B208-709D7F49A77C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Worker", "%MobiusCodeRoot%\csharp\Worker\Microsoft.Spark.CSharp\Worker.csproj", "{82C9D3B2-E4FB-4713-B980-948C1E96A10A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Worker", "d:\msgit\orgMobius\csharp\Worker\Microsoft.Spark.CSharp\Worker.csproj", "{82C9D3B2-E4FB-4713-B980-948C1E96A10A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "testKeyValueStream", "testKeyValueStream\testKeyValueStream.csproj", "{E40F7467-A33E-4CCD-841A-EBB14FFB75EF}"
 EndProject

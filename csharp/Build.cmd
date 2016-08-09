@@ -16,7 +16,9 @@ set PROJ_NAME=allSubmitingTest
 set PROJ=%ShellDir%\%PROJ_NAME%.sln
 
 if [%MobiusCodeRoot%] == [] (
-	echo Warning : not set MobiusCodeRoot. You can call %ShellDir%\..\update-MobiusCodeRoot-and-project-files.bat {MobiusCodeRoot}
+	echo Warning : not found %%MobiusCodeRoot%% --directory that cloned from Mobius github.
+    echo You can set MobiusCodeRoot={MobiusCodeRoot} or just call %ShellDir%\..\update-MobiusCodeRoot-and-project-files.bat {MobiusCodeRoot}
+    echo. 
 	set upperTryDir=%ShellDir%\..\..
 	if not exist !upperTryDir!\csharp\SparkCLR.sln exit /b -1
 	echo Detected and try to set MobiusCodeRoot=!upperTryDir!

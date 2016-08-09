@@ -1,2 +1,12 @@
-@if "%~1" == "" echo Usage : %0 directory. (recursive add '-r' , replace add '-R'; preview without '-R'. more options see usage of lzmw && exit /b 0
-%~dp0..\lzmw -it "^(\s*@\s*echo)\s+on\b" -o "$1 off" -f "\.(bat|cmd)$" -p "%~1" %*
+@if "%~1" == "" (
+    echo Usage : %0 directory. recursive add '-r' , replace add '-R'; preview without '-R'. more options see usage of %~dp0..\lzmw
+    echo Example-preview : %0 %CD%
+    echo Example-replace : %0 %CD% -R
+    echo Example-preview-sub-directory : %0 %CD% -r
+    echo Example-replace-sub-directory : %0 %CD% -r -R
+    echo Example-filter-directory : %0 %CD% --nd "^(softwares|logs|data|target|bin|obj|Debug|Release)$" -r -R
+    echo Example-filter-directory : %0 . --nd "^(softwares|logs|data|target|bin|obj|Debug|Release)$" -r -R
+    echo Example-filter-directory : %0 %%CD%% --nd "^(softwares|logs|data|target|bin|obj|Debug|Release)$" -r -R
+    exit /b 5
+)
+%~dp0..\lzmw -it "^(\s*@\s*echo)\s+on\b" -o "$1 off" -f "\.(bat|cmd)$" -p %1 %*

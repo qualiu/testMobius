@@ -1,6 +1,6 @@
 @echo off
 SetLocal EnableDelayedExpansion
-if /I "%~1" == "" goto :ShowUsage & exit /b 0
+if /I "%~1" == "" goto :ShowUsage & exit /b 5
 if /I "%~1" == "-h" goto :ShowUsage & exit /b 0
 if /I "%~1" == "--help" goto :ShowUsage & exit /b 0
 

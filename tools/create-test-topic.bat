@@ -1,10 +1,10 @@
 @echo off
 SetLocal EnableExtensions EnableDelayedExpansion
 
-if "%1" == "" (
+if "%~1" == "" (
     echo Usage   : %0  KafkaBin                ZookeeperConnection  KafkaBrokerConnection  TopicName  InitTopicDataFile
     echo Example : %0  kafka_2.10\bin\windows  localhost:2181       localhost:9092         test     data\init-kafka-data.txt
-    exit /b 0
+    exit /b 5
 )
 
 set KafkaBin=%1

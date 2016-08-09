@@ -18,17 +18,17 @@ echo. & echo Current SparkOptions=%SparkOptions% & echo.
 
 if "%SPARK_HOME%" == "" (
     echo Not set SPARK_HOME , treat as local mode, depends on { %%SPARK_HOME%% + %%HADOOP_HOME%% *** } or just { %%MobiusCodeRoot%% }.
-    call %CommonToolDir%\set-local-sparkCLR-env.bat %MobiusCodeRoot% || exist /b 1
+    call %CommonToolDir%\set-local-sparkCLR-env.bat %MobiusCodeRoot% || exit /b 1
 )
 
 call %CommonToolDir%\bat\check-exist-path.bat %SPARKCLR_HOME%\scripts\sparkclr-submit.cmd || exit /b 1
 call %CommonToolDir%\bat\check-exist-path.bat %TestExePath% TestExePath || exit /b 1
 
 set AllArgs=%*
-if "%1" == "" (
+if "%~1" == "" (
     echo No parameter, Usage as following, run : %TestExePath%
     call %TestExePath%
-    exit /b 0
+    exit /b 5
 )
 
 pushd %TestExeDir%

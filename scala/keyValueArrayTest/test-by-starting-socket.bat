@@ -17,13 +17,13 @@ if not exist %lzJar% (
 call %CommonToolDir%\bat\check-exist-path.bat %lzJar% || exit /b 1
 
 set AllArgs=%*
-if "%1" == "" (
+if "%~1" == "" (
     echo No parameter, Usage as following:
     java -jar %lzJar%
     echo Example parameter : -p 9486 -r 30 -b 1 -w 3 -s 3 -v 50 -c d:\tmp\checkDir -d
     echo Parameters like host, port and validation are according to source socket tool : %SourceSocketExe%
     echo Source socket directory : %SocketCodeDir%
-    exit /b 0
+    exit /b 5
 )
 
 call %CommonToolDir%\bat\check-exist-path.bat "%MobiusCodeRoot%" MobiusCodeRoot || exit /b 1
@@ -49,7 +49,7 @@ echo Test tool Usage just run : java -jar %lzJar%
 exit /b 0
 
 :ExtractArgs
-    if "%1" == ""  goto :End
+    if "%~1" == ""  goto :End
     if "%1" == "-p" (
         set Port=%2
     )

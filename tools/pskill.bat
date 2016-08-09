@@ -11,7 +11,7 @@ if "%~1" == "" (
     echo Usage   : %0  process-match-options or process-id-list
     echo Example : %0  -i -t "java.*-X\S+|cmd.exe"  ---- kill process by commandline matching, more info run : lzmw.exe
     echo Example : %0  2030 3021                    ---- kill process by id
-    exit /b 0
+    exit /b 5
 )
 
 set allArgs=%*

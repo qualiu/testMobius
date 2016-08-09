@@ -18,17 +18,17 @@ call %CommonToolDir%\set-local-sparkCLR-env.bat %MobiusCodeRoot% || exit /b 1
 
 call %CommonToolDir%\bat\check-exist-path.bat %SourceSocketExe% "SourceSocketExe" || exit /b 1
 call %CommonToolDir%\bat\check-exist-path.bat %SPARKCLR_HOME%\scripts\sparkclr-submit.cmd "sparkclr-submit.cmd"  || exit /b 1
-call %CommonToolDir%\bat\check-exist-path.bat %TestExePath% "TestExePath" || exit /b 1
-call %CommonToolDir%\bat\check-exist-path.bat %ExeDir% "ExeDir" || exit /b 1
+call %CommonToolDir%\bat\check-exist-path.bat %TestExePath% TestExePath || exit /b 1
+call %CommonToolDir%\bat\check-exist-path.bat %ExeDir% ExeDir || exit /b 1
 
 set AllArgs=%*
-if "%1" == "" (
+if "%~1" == "" (
     echo No parameter, Usage as following, run : %TestExePath%
     call %TestExePath%
     echo Example parameters : -p 9112 -e 1 -r 30 -b 1 -w 3 -s 3 -n 50 -c d:\tmp\checkDir -d 1 
     echo Parameters like host, port and validation are according to source socket tool : %SourceSocketExe%
     echo Test usage just run : %TestExePath%
-    exit /b 0
+    exit /b 5
 )
 
 set Port=9333
@@ -54,7 +54,7 @@ echo Test tool usages just run : %TestExePath%
 exit /b 0
 
 :ExtractArgs
-    if "%1" == ""  goto :End
+    if "%~1" == ""  exit /b 0
     if "%1" == "-p" (
         set Port=%2
     )

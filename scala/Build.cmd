@@ -1,3 +1,4 @@
+call %~dp0\check-build-tools.bat || exit /b 1
 @pushd %~dp0
 if exist pom.xml (
     call mvn package

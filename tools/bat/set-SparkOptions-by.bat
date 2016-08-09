@@ -1,3 +1,4 @@
+@echo off
 echo set SparkOptions with SparkClusterOptions SparkLocalOptions TestExePath
 echo ### You can set SparkOptions to avoid default local mode setting. Examples :
 echo ### Cluster Mode : set SparkOptions=%SparkClusterOptions%

@@ -9,7 +9,7 @@ if "%1" == "--help" set ToShowUsage=1
 if "%ToShowUsage%" == "1" (
     echo Usage   : %0  Save-Directory       [OVERWRITE : default = 0 not ]
     echo Example : %0  d:\tmp\               0
-    exit /b 0
+    exit /b 5
 )
 
 set SAVE_DIR=%1
@@ -19,28 +19,23 @@ set ShellDir=%~dp0
 if %ShellDir:~-1%==\ set ShellDir=%ShellDir:~0,-1%
 set CommonToolDir=%ShellDir%
 
-if "%SAVE_DIR%" == "" set SAVE_DIR=%ShellDir%\apps
+call %ShellDir%\set-common-dir-and-tools.bat
+if [%SAVE_DIR%] == [] set SAVE_DIR=%MobiusTestSoftwareDir%
+
+call %CommonToolDir%\bat\check-exist-path.bat %TarTool% || exit /b 1
+
+call %CommonToolDir%\bat\check-exist-path.bat %DownloadTool% || exit /b 1
 
 rem ======== setttings ========================================
-set DataRoot=%ShellDir%\data
-set LogRoot=%ShellDir%\logs
-for /F "tokens=*" %%d in ('echo %LogRoot%^| lzmw -x \ -o / -PAC ') do set LogRootUnix=%%d
-set ZookeeperLogRoot=%LogRoot%\zklog
-set KafkaLogRoot=%LogRoot%\kafka-logs
+for /F "tokens=*" %%d in ('echo %MobiusTestLogDir%^| lzmw -x \ -o / -PAC ') do set LogRootUnix=%%d
+set ZookeeperLogRoot=%MobiusTestLogDir%\zklog
+set KafkaLogRoot=%MobiusTestLogDir%\kafka-logs
 set ZookeeperLogRootUnix=%LogRootUnix%/zklog
 set KafkaLogRootUnix=%LogRootUnix%/kafka-logs
 
-set InitTopicDataFile=%ShellDir%\data\init-kafka-data.txt
+set InitTopicDataFile=%MobiusTestDataDir%\init-kafka-data.txt
 set TopicName=test
 rem ======== setttings ========================================
-
-set TarTool=%ShellDir%\gnu\bsdtar.exe
-call %CommonToolDir%\bat\check-exist-path.bat %TarTool% || exit /b 1
-
-set WGetTool=%ShellDir%\wget.exe
-
-set DownloadTool=%ShellDir%\download-file.bat
-call %CommonToolDir%\bat\check-exist-path.bat %DownloadTool% || exit /b 1
 
 call icacls %ShellDir%\*.exe /grant Everyone:RX
 call icacls %ShellDir%\gnu\*.exe /grant Everyone:RX
@@ -48,7 +43,7 @@ call icacls %ShellDir%\gnu\*.exe /grant Everyone:RX
 set PATH=%PATH%;%ShellDir%
 
 if not exist %SAVE_DIR% md %SAVE_DIR%
-if not exist %LogRoot% md %LogRoot%
+if not exist %MobiusTestLogDir% md %MobiusTestLogDir%
 
 set KafkaName=kafka_2.10-0.10.0.0
 set KafkaTarName=kafka_2.10-0.10.0.0.tgz
@@ -57,13 +52,12 @@ set KafakaUrl="https://www.apache.org/dist/kafka/0.10.0.0/%KafkaTarName%"
 set KafkaRoot=%SAVE_DIR%\%KafkaName%
 set KafkaBin=bin\windows
 set KafkaBinFull=%KafkaRoot%\%KafkaBin%
-if not exist "%SAVE_DIR%\%KafkaTarName%" call %DownloadTool% %KafakaUrl% %SAVE_DIR%
+if not exist "%SAVE_DIR%\%KafkaTarName%" call %DownloadTool% %KafakaUrl% %SAVE_DIR% %KafkaTarName%
 if exist %KafkaRoot% (
     if "%OVERWRITE%" == "1"  rd /q /s %KafkaRoot%
 ) else (
     echo === first time initialize Kafka begin in %0 ==========
-    rem %TarTool% xf %SAVE_DIR%\%KafkaTarName% -C %SAVE_DIR%
-    pushd %SAVE_DIR% && %TarTool% xf %KafkaTarName% & popd
+    call %TarTool% xf %SAVE_DIR%\%KafkaTarName% -C %MobiusTestSoftwareDir% || exit /b 1
     call %CommonToolDir%\bat\check-exist-path.bat %KafkaBinFull% || exit /b 1
     lzmw -it "\b(dataDir)\s*=.*$" -o "$1=%ZookeeperLogRootUnix%" -p %KafkaRoot%\config\zookeeper.properties -R
     lzmw -it "\b(log.dirs)\s*=.*$" -o "$1=%KafkaLogRootUnix%" -p %KafkaRoot%\config\server.properties -R
@@ -94,7 +88,7 @@ exit /b 0
     set ZookeeperTarName=%ZookeeperName%.tar.gz
     set ZookeeperUrl="ttps://www.apache.org/dist/zookeeper/%ZookeeperName%/%ZookeeperTarName%"
     set ZookeeperRoot=%SAVE_DIR%\%ZookeeperName%
-    if not exist %SAVE_DIR%\%ZookeeperTarName% %DownloadTool% %ZookeeperUrl% %SAVE_DIR%
+    if not exist %SAVE_DIR%\%ZookeeperTarName% %DownloadTool% %ZookeeperUrl% %SAVE_DIR% %ZookeeperTarName%
     if exist %ZookeeperRoot% (
         if "%OVERWRITE%" == "1"  rd /q /s %ZookeeperRoot%
     ) else (

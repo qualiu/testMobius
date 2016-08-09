@@ -10,10 +10,10 @@ if not exist %TestJarPath% (
     pushd %ShellDir% && call mvn package & popd
 )
 
-if "%1" == "" (
+if "%~1" == "" (
     echo No parameter, Usage as following, run : %TestJarPath%
     call java -jar %TestJarPath%
-    exit /b 0
+    exit /b 5
 )
 
 call %CommonToolDir%\bat\check-exist-path.bat %TestJarPath% || exit /b 1
@@ -29,7 +29,7 @@ echo. & echo Current SparkOptions=%SparkOptions% & echo.
 
 if "%SPARK_HOME%" == "" (
     echo Not set SPARK_HOME , treat as local mode
-    call %CommonToolDir%\set-local-sparkCLR-env.bat %MobiusCodeRoot% || exist /b 1
+    call %CommonToolDir%\set-local-sparkCLR-env.bat %MobiusCodeRoot% || exit /b 1
 )
 
 call %CommonToolDir%\bat\check-exist-path.bat %SPARK_HOME%\bin\spark-submit.cmd || exit /b 1

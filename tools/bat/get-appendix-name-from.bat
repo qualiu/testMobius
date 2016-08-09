@@ -1,3 +1,4 @@
+@echo off
 rem input args (submit options) like : --master yarn-cluster --num-executors 100 --executor-cores 28 --executor-memory 30G --conf xxx=xxxx
 rem this script try to get brief sumbit options, set them to AppNameAppendix (-ec-28_-em-30G)
 call %~dp0..\check-set-tool-path.bat || exit /b 1

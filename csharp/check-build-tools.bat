@@ -5,7 +5,6 @@ if exist "%MobiusCodeRoot%\build\tools\nuget.exe" (
 	exit /b 0
 )
 
-pushd %~dp0..\tools
-if not exist nuget.exe call download-file.bat "http://dist.nuget.org/win-x86-commandline/latest/nuget.exe" %CD%
-set "PATH=%PATH%;%CD%"
-popd
+call %~dp0..\tools\set-common-dir-and-tools.bat
+if not exist nuget.exe call %DownloadTool% "http://dist.nuget.org/win-x86-commandline/latest/nuget.exe" %MobiusTestSoftwareDir% nuget.exe || exit /b 1
+set "PATH=%PATH%;%MobiusTestSoftwareDir%"

@@ -6,7 +6,7 @@ set CommonToolDir=%ShellDir%\..\..\tools
 set CallBat=%ShellDir%\test.bat
 call %CommonToolDir%\bat\check-exist-path.bat %CallBat%
 
-if "%1" == "" (
+if "%~1" == "" (
     echo #################### Usage of %CallBat% ##################################
     call %CallBat%
     echo ############################################################################
@@ -15,7 +15,7 @@ if "%1" == "" (
     echo Usage :   csv-data-directory  initial-buffer-size [increase-times: default 1]   [increasement : default : initial-buffer-size] 
     echo Example : D:\csv-2015-10-01   1024                 1
     echo Example : hdfs:///common/AdsData/MUID  1024
-    exit /b 0
+    exit /b 5
 )
 
 set DataDirectory=%1
@@ -27,7 +27,7 @@ if "%BufferIncrease%" == "" set BufferIncrease=%InitBufferSize%
 if "%TestTimes%" == "" set TestTimes=1
 
 if "%TestExePath%"=="" for /f %%g in (' for /R %ShellDir% %%f in ^( *.exe ^) do @echo %%f ^| findstr /I /C:vshost /V ^| findstr /I /C:obj /V ') do set TestExePath=%%g
-call %CommonToolDir%\bat\check-exist-path.bat "%TestExePath%" "TestExePath" || exit /b 1
+call %CommonToolDir%\bat\check-exist-path.bat "%TestExePath%" TestExePath || exit /b 1
 
 for %%a in ("%TestExePath%") do ( 
     set ExeDir=%%~dpa

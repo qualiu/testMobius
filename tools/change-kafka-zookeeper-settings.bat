@@ -6,10 +6,10 @@ if %ShellDir:~-1%==\ set ShellDir=%ShellDir:~0,-1%
 set CommonToolDir=%ShellDir%
 set PATH=%PATH%;%ShellDir%
 
-if [%1] == [] (
+if "%~1" == "" (
     echo Usage   : %0  Kafka-Directory          Zookeeper-Port   Kafka-Port  [Zookeeper-Log-Dir]       [Kafka-Log-Dir]
     echo Example : %0  d:\kafka_2.10-0.10.0.0   2181            9092        %ShellDir%\logs\zklogs    %ShellDir%\logs\kafka-logs
-    exit /b 0
+    exit /b 5
 )
 
 set KAFKA_ROOT=%1

@@ -26,10 +26,10 @@ call %CommonToolDir%\bat\check-exist-path.bat %SPARKCLR_HOME%\scripts\sparkclr-s
 call %CommonToolDir%\bat\check-exist-path.bat %TestExePath% TestExePath || exit /b 1
 
 set AllArgs=%*
-if "%1" == "" (
+if "%~1" == "" (
     echo No parameter, Usage as following, run : %TestExePath%
     call %TestExePath%
-    exit /b 0
+    exit /b 5
 )
 
 echo %SPARK_HOME%\bin\spark-submit.cmd %SparkOptions% %TestExePath% %AllArgs%

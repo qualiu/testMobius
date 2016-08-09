@@ -6,15 +6,15 @@ SetLocal EnableExtensions EnableDelayedExpansion
 set ShellDir=%~dp0
 if %ShellDir:~-1%==\ set ShellDir=%ShellDir:~0,-1%
 set CommonToolDir=%ShellDir%
+call %CommonToolDir%\set-common-dir-and-tools.bat
 
-set AppDir=%ShellDir%\apps
-dir /A:D /b %ShellDir%\apps\kafka* 2>nul
+dir /A:D /b %MobiusTestSoftwareDir%\kafka* 2>nul
 if %errorlevel% NEQ 0 ( 
-    call %ShellDir%\download-kafka-zookeeper.bat %AppDir% || exit /b 1
+    call %ShellDir%\download-kafka-zookeeper.bat %MobiusTestSoftwareDir% || exit /b 1
     sleep 9
 )
 
-for /F "tokens=*" %%d in (' dir /A:D /B %AppDir%\kafka* ') do set KafkaRoot=%AppDir%\%%d
+for /F "tokens=*" %%d in (' dir /A:D /B %MobiusTestSoftwareDir%\kafka* 2^>nul ') do set KafkaRoot=%MobiusTestSoftwareDir%\%%d
 call %CommonToolDir%\bat\check-exist-path.bat %KafkaRoot% kafka || exit /b 1
 
 echo ========= start zookeeper and Kafka in %KafkaRoot% ======

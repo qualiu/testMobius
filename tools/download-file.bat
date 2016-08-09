@@ -1,24 +1,30 @@
+@echo off
 rem tar.exe wget.exe from : http://gnuwin32.sourceforge.net/packages.html
-
 SetLocal EnableExtensions EnableDelayedExpansion
 
-if "%1" == "" (
-    echo Usage   : %0  Url                                Save-Directory         
-    echo Example : %0  http://**/zookeeper-3.4.6.tar.gz   d:\tmp\zookeeper-3.4.6
-    exit /b 0
+if "%~1" == "" (
+    echo Usage   : %0  Url                                Save-Directory          [SaveName]
+    echo Example : %0  http://**/zookeeper-3.4.6.tar.gz   d:\tmp\zookeeper-3.4.6  zookeeper-3.4.6.tar.gz
+    echo Define SaveName will safely download to a SaveName.tmp then rename it to SaveName
+    exit /b 5
 )
 
 set Url=%~1
-set SAVE_DIR=%2
+set SaveDir=%2
+set SaveName=%3
 
-set ShellDir=%~dp0
-if %ShellDir:~-1%==\ set ShellDir=%ShellDir:~0,-1%
-set CommonToolDir=%ShellDir%
+if %SaveDir:~-1%==\ set SaveDir=%SaveDir:~0,-1%
 
-set WgetExe=%ShellDir%\gnu\wget.exe
+call %~dp0\set-common-dir-and-tools.bat
+call %CommonToolDir%\bat\check-exist-path.bat %WgetTool% || exit /b 1
 
-call %CommonToolDir%\bat\check-exist-path.bat %WgetExe% || exit /b 1
+if [%SaveDir%] == [] set SaveDir=%MobiusTestSoftwareDir%
+if not exist %SaveDir% md %SaveDir%
 
-if not exist %SAVE_DIR% md %SAVE_DIR%
-
-%WgetExe% --no-check-certificate "%Url%" -P %SAVE_DIR% >nul
+if [%SaveName%] == [] (
+    %WgetTool% --no-check-certificate "%Url%" -P %SaveDir%
+) else (
+    if exist %SaveDir%\%SaveName%.tmp del /F %SaveDir%\%SaveName%.tmp
+    %WgetTool% --no-check-certificate "%Url%" -O %SaveDir%\%SaveName%.tmp
+    move %SaveDir%\%SaveName%.tmp %SaveDir%\%SaveName%
+)
