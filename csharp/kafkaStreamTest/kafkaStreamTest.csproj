@@ -3,7 +3,7 @@
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <MobiusCodeRoot Condition=" '$(MobiusCodeRoot)' == '' ">..\..\..</MobiusCodeRoot>
-	<MobiusTestPackageParentDir Condition=" '$(MobiusTestPackageParentDir)' == '' ">..</MobiusTestPackageParentDir>
+    <MobiusTestPackageParentDir Condition=" '$(MobiusTestPackageParentDir)' == '' ">..</MobiusTestPackageParentDir>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -88,7 +88,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="$(MobiusCodeRoot)\csharp\Adapter\Microsoft.Spark.CSharp\Adapter.csproj">
+    <ProjectReference Include="..\..\..\lqmMobius\csharp\Adapter\Microsoft.Spark.CSharp\Adapter.csproj">
       <Project>{ce999a96-f42b-4e80-b208-709d7f49a77c}</Project>
       <Name>Adapter</Name>
     </ProjectReference>
@@ -99,7 +99,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">copy /y $(MobiusCodeRoot)\csharp\Worker\Microsoft.Spark.CSharp\bin\$(ConfigurationName)\CSharpWorker.* $(TargetDir)</PostBuildEvent>
+    <PostBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">copy /y $(MobiusCodeRoot)\csharp\Worker\Microsoft.Spark.CSharp\$(OutputPath)\CSharpWorker.* $(TargetDir)</PostBuildEvent>
     <PostBuildEvent Condition=" '$(OS)' == 'Unix' ">cp -uv $(MobiusCodeRoot)/csharp/Worker/Microsoft.Spark.CSharp/bin/$(ConfigurationName)/CSharpWorker.* $(TargetDir)</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

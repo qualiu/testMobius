@@ -50,7 +50,7 @@ namespace kafkaStreamTest
             Logger.LogInfo($"offsetsRange[{offsetsRange.Count}] = {string.Join(", ", offsetsRange.Select(kv => $"{kv.Key} = {kv.Value}")) } ");
 
             beginTime = DateTime.UtcNow;
-            if (Options.DeleteCheckPointDirectory)
+            if (Options.DeleteCheckPointDirectory && !string.IsNullOrWhiteSpace(Options.CheckPointDirectory))
             {
                 TestUtils.DeleteDirectory(Options.CheckPointDirectory);
             }

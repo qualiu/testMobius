@@ -35,6 +35,9 @@ namespace kafkaStreamTest
 
         [ArgDefaultValue(true), ArgDescription("show received lines text")]
         public bool ShowReceivedLines { get; set; }
+
+        [ArgShortcut("t"), ArgDescription("test times : 0 means run infinit times"), ArgDefaultValue(1)]
+        public int TestTimes { get; set; }
     }
 
     class WindowSlideTest : TestKafkaBase<WindowSlideTest, WindowSlideTestOptions>
@@ -49,8 +52,18 @@ namespace kafkaStreamTest
             PrepareToRun();
 
             var options = Options as WindowSlideTestOptions;
+            var allBeginTime = DateTime.Now;
 
-            var streamingContext = StreamingContext.GetOrCreate(options.CheckPointDirectory,
+            for(var k=0; options.TestTimes <=0 || k < options.TestTimes; k++) {
+
+                //if (Options.DeleteCheckPointDirectory && !string.IsNullOrWhiteSpace(Options.CheckPointDirectory))
+                //{
+                //    TestUtils.DeleteDirectory(Options.CheckPointDirectory);
+                //}
+
+                var beginTime = DateTime.Now;
+                Logger.LogInfo("begin test[{0}]-{1}", k + 1, options.TestTimes >0 ? options.TestTimes.ToString() : "infinite");
+                var streamingContext = StreamingContext.GetOrCreate(options.CheckPointDirectory,
                 () =>
                 {
                     var ssc = new StreamingContext(sparkContext.Value, options.BatchSeconds * 1000L);
@@ -73,11 +86,12 @@ namespace kafkaStreamTest
                     return ssc;
                 });
 
-            streamingContext.Start();
+                streamingContext.Start();
+                WaitTerminationOrTimeout(streamingContext);
+                Logger.LogInfo("end test[{0}]-{1}, used time = {2} , sumCount : {3}", k + 1, options.TestTimes > 0 ? options.TestTimes.ToString() : "infinite", DateTime.Now - beginTime, SumCountStatic.GetStaticSumCount().ToString());
+            }
 
-            WaitTerminationOrTimeout(streamingContext);
-
-            Logger.LogInfo("Final sumCount : {0}", SumCountStatic.GetStaticSumCount().ToString());
+            Logger.LogInfo("Final sumCount : {0}, test times = {2}, used time = {2}, ", SumCountStatic.GetStaticSumCount().ToString(), options.TestTimes, DateTime.Now - allBeginTime);
         }
 
 

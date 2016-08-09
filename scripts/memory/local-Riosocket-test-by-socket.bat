@@ -23,14 +23,14 @@ if "%~1" == "" (
     echo Example : %0   5          9278             60                       20480                      100
     echo SourceLinesSocket usage : just run %SourceSocketExe%
     echo TestExe usage : just run %TestExePath%
-    echo You can set SparkOptions to avoid default. Current = %SparkOptions%
+    echo You can set SparkOptions to avoid default. Current SparkOptions=%SparkOptions%
     exit /b 5
 )
 
 set TestTimes=%1
 if [%2]==[] ( set TestPort=9278 ) else ( set TestPort=%2 )
 if [%3]==[] ( set EachTestRunSeconds=30 ) else ( set EachTestRunSeconds=%3 )
-if [%4]==[] ( set ElementCountInArray=10240) else ( set ElementCountInArray=%4 )
+if [%4]==[] ( set ElementCountInArray=10240 ) else ( set ElementCountInArray=%4 )
 if [%5]==[] ( set SendInterval=100 ) else ( set SendInterval=%5 )
 
 rem set ElementCountInArray to accelerate memory problem if has

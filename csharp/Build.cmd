@@ -1,13 +1,15 @@
 @echo off
 SetLocal EnableDelayedExpansion
 
-echo Usage   : %0  BuildConfig{none^|Debug^|Release}  CppDll{none^|NoCpp}
+echo Usage   : %0  BuildConfig{none^|Debug^|Release} PlatformType(x64^|x86^|AnyCPU)  CppDll{none^|NoCpp}
 echo Example : %0  Release
 if /I "%~1" == "-h" exit /b 0
 if /I "%~1" == "--help" exit /b 0
 
 set BuildConfig=%1
-if /I "%2" == "NoCpp" set CppDll=NoCpp
+rem if /I "%~2" == "" ( set "PlatformOption=/p:Platform=x64" ) else ( set "PlatformOption=/p:Platform=%~3" )
+if /I "%~2" == "" ( set "PlatformOption=" ) else ( set "PlatformOption=/p:Platform=%~2" )
+if /I "%~3" == "NoCpp" set CppDll=NoCpp
 
 SET ShellDir=%~dp0
 @REM Remove trailing backslash \
@@ -49,7 +51,7 @@ if NOT EXIST "%MSBUILDEXEDIR%\." SET MSBUILDEXEDIR=%programfiles%\MSBuild\%Visua
 if NOT EXIST "%MSBUILDEXEDIR%\." GOTO :ErrorMSBUILD
 
 SET MSBUILDEXE=%MSBUILDEXEDIR%\MSBuild.exe
-SET MSBUILDOPT=/verbosity:minimal /p:WarningLevel=3
+SET MSBUILDOPT=/verbosity:minimal /p:WarningLevel=3 %PlatformOption%
 
 if "%builduri%" == "" set builduri=Build.cmd
 

@@ -3,7 +3,7 @@
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <MobiusCodeRoot Condition=" '$(MobiusCodeRoot)' == '' ">..\..\..</MobiusCodeRoot>
-	<MobiusTestPackageParentDir Condition=" '$(MobiusTestPackageParentDir)' == '' ">..</MobiusTestPackageParentDir>
+    <MobiusTestPackageParentDir Condition=" '$(MobiusTestPackageParentDir)' == '' ">..</MobiusTestPackageParentDir>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -82,7 +82,7 @@
     <Compile Include="TestUtils.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="$(MobiusCodeRoot)\csharp\Adapter\Microsoft.Spark.CSharp\Adapter.csproj">
+    <ProjectReference Include="..\..\..\lqmMobius\csharp\Adapter\Microsoft.Spark.CSharp\Adapter.csproj">
       <Project>{CE999A96-F42B-4E80-B208-709D7F49A77C}</Project>
       <Name>Adapter</Name>
     </ProjectReference>

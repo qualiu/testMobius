@@ -16,8 +16,12 @@ set MobiusTestSoftwareDir=%CD%\softwares
 set MobiusTestDataDir=%CD%\data
 set MobiusTestLogDir=%CD%\logs
 set MobiusTestRoot=%CD%
+where psall.bat 2>nul >nul | set "PATH=%PATH%;%CommonToolDir%;%CommonToolDir%\in-later"
 popd
 
 if not exist %MobiusTestSoftwareDir% md %MobiusTestSoftwareDir%
 if not exist %MobiusTestDataDir% md %MobiusTestDataDir%
 if not exist %MobiusTestLogDir% md %MobiusTestLogDir%
+
+for /F "tokens=*" %%d in (' dir /A:D /B %MobiusTestSoftwareDir%\kafka* 2^>nul ') do set MobiusTestKafkaDir=%MobiusTestSoftwareDir%\%%d
+call %CommonToolDir%\check-set-tool-path.bat

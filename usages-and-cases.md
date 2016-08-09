@@ -44,7 +44,7 @@ Tips :
  application_1469835824077_0252  RunRDDMaxDeletionsByUser = 166  RunRDDLineCount = 34    RunDFMaxDeletionsByUser = 594   RunDFLineCount = 266
 ```
 
-## History Cases 
+## Usage-Example/History-Cases 
 1. sparkclr-submit passing arguments to spark-submit
  - Issue items : (failed at submiting)
    * Arguments contain special characters will be cut.
@@ -70,7 +70,12 @@ Tips :
   ```
   scripts\bat\submit-perf-test-comparison.bat
   ```
-
+5. RIOSocket test and with memory test
+  - You can set SparkOptions=*** (following scripts will show you) with/without : `--conf spark.mobius.CSharp.socketType=Rio`
+  - You can clean and build specified type : `csharp\Clean.cmd & csharp\Build.cmd Release x64`
+  - You can `set TestExePath=xxxx\bin\Release` or `set TestExePath=xxxx\bin\x64\Release`
+  * Socket : `scripts\memory\local-Riosocket-test-by-socket.bat 1`
+  * Kafka : `scripts\memory\local-Riosocket-kafka-test.bat 1`
 
 
 
