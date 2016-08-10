@@ -1,6 +1,8 @@
 @echo off
-echo set SparkOptions with SparkClusterOptions SparkLocalOptions TestExePath
+echo You set SparkOptions SparkClusterOptions SparkLocalOptions TestExePath to avoid default auto-detection.
+echo Mobius configuration like --conf spark.mobius.xxx instruction : https://github.com/Microsoft/Mobius/blob/master/notes/configuration-mobius.md
 echo ### You can set SparkOptions to avoid default local mode setting. Examples :
+echo.
 echo ### Cluster Mode : set SparkOptions=%SparkClusterOptions%
 echo.
 echo ### Local Mode : set SparkOptions=%SparkLocalOptions%

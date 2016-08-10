@@ -1,14 +1,14 @@
 @echo off
 SetLocal EnableDelayedExpansion
 
-echo Usage   : %0  BuildConfig{none^|Debug^|Release} PlatformType(x64^|x86^|AnyCPU)  CppDll{none^|NoCpp}
-echo Example : %0  Release
+echo Usage   : %0  BuildConfig{none^|Debug^|Release} PlatformType(none^|x64^|x86^|Any CPU)  CppDll{none^|NoCpp}
+echo Example : %0  Release "Any CPU"
 if /I "%~1" == "-h" exit /b 0
 if /I "%~1" == "--help" exit /b 0
 
 set BuildConfig=%1
 rem if /I "%~2" == "" ( set "PlatformOption=/p:Platform=x64" ) else ( set "PlatformOption=/p:Platform=%~3" )
-if /I "%~2" == "" ( set "PlatformOption=" ) else ( set "PlatformOption=/p:Platform=%~2" )
+if /I "%~2" == "" ( set "PlatformOption=" ) else ( set PlatformOption=/p:Platform="%~2" )
 if /I "%~3" == "NoCpp" set CppDll=NoCpp
 
 SET ShellDir=%~dp0
@@ -19,15 +19,15 @@ set PROJ=%ShellDir%\%PROJ_NAME%.sln
 
 if [%MobiusCodeRoot%] == [] (
 	echo Warning : not found %%MobiusCodeRoot%% --directory that cloned from Mobius github.
-    echo You can set MobiusCodeRoot={MobiusCodeRoot} or just call %ShellDir%\..\update-MobiusCodeRoot-and-project-files.bat {MobiusCodeRoot}
-    echo. 
+	echo You can set MobiusCodeRoot={MobiusCodeRoot} or just call %ShellDir%\update-MobiusCodeRoot-and-project-files.bat {MobiusCodeRoot}
+	echo. 
 	set upperTryDir=%ShellDir%\..\..
 	if not exist !upperTryDir!\csharp\SparkCLR.sln exit /b -1
 	echo Detected and try to set MobiusCodeRoot=!upperTryDir!
 	pushd !upperTryDir! && set MobiusCodeRoot=!CD! && popd
 )
 
-call %ShellDir%\..\update-MobiusCodeRoot-and-project-files.bat %MobiusCodeRoot%
+call %ShellDir%\update-MobiusCodeRoot-and-project-files.bat %MobiusCodeRoot%
 echo.
 
 set CppOutDir=%MobiusCodeRoot%\cpp
@@ -89,7 +89,7 @@ if EXIST %PROJ_NAME%.nuspec (
 
 :BuildByConfig
 	SET Configuration=%1
-	@echo Build %Configuration% ============================
+	@echo ============== Build %Configuration% ============================
 	"%MSBUILDEXE%" /p:Configuration=%Configuration%;AllowUnsafeBlocks=true %MSBUILDOPT% "%PROJ%"
 	@if ERRORLEVEL 1 GOTO :ErrorStop
 	@echo BUILD ok for %Configuration% %PROJ%

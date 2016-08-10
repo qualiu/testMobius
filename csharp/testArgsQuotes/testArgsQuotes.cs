@@ -35,7 +35,7 @@ namespace testArgsQuotes
                 var currentDirectory = string.Empty;
                 if (mapCurrentDir.TryGetValue(Environment.OSVersion.Platform, out currentDirectory))
                 {
-                    Console.WriteLine(@"Example-2: {0}  {1}  arg2@*#:,+.-\/~", exe, currentDirectory);
+                    Console.WriteLine(@"Example-2: {0}  {1}  arg2@*#:,+.-\/~  Pi* d:\tmp {2}", exe, currentDirectory, "\"jdbc:mysql://localhost:3306/lzdb?user=guest&password=abc123\"");
                 }
 
                 return;
