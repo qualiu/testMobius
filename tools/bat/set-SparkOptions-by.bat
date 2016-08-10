@@ -10,7 +10,7 @@ echo.
 echo ### You can set MobiusTestExePath to avoid detected: %MobiusTestExePath% 
 
 rem set default SparkOptions if not empty %SparkOptions%
-echo ##%SparkOptions% | findstr /I /R "[0-9a-z]" >nul || set SparkOptions=%SparkLocalOptions%
+echo ##%* | findstr /I /R "[0-9a-z]" >nul || set SparkOptions=%SparkLocalOptions%
 
 call %CommonToolDir%\bat\get-appendix-name-from %SparkOptions%
 

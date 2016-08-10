@@ -11,7 +11,7 @@ set SparkLocalOptions=--num-executors 8 --executor-cores 4 --executor-memory 8G 
 set SparkClusterOptions=--master yarn-cluster --num-executors 100 --executor-cores 28 --executor-memory 30G --driver-memory 32G --conf spark.python.worker.connectionTimeoutMs=3000000 --conf spark.streaming.nao.loadExistingFiles=true --conf spark.streaming.kafka.maxRetries=300 --conf spark.yarn.executor.memoryOverhead=18000 --conf spark.streaming.kafka.maxRetries=20  --conf spark.mobius.streaming.kafka.CSharpReader.enabled=true
 
 echo ### You can set HasRIO=1 to enable RIO socket
-call %CommonToolDir%\bat\set-SparkOptions-by.bat
+call %CommonToolDir%\bat\set-SparkOptions-by.bat %SparkOptions%
 
 if "%HasRIO%" == "1" set SparkOptions=%SparkOptions% --conf spark.mobius.CSharp.socketType=Rio
 echo. & echo Current SparkOptions=%SparkOptions% & echo.

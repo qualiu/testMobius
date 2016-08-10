@@ -12,7 +12,7 @@ set SparkLocalOptions=--executor-cores 2 --driver-cores 2 --executor-memory 1g -
 set SparkClusterOptions=--master yarn-cluster --num-executors 100 --executor-cores 28 --executor-memory 30G --driver-memory 32G
 
 echo ### You can enable/disable RIO socket by add/remove : --conf spark.mobius.CSharp.socketType=Rio
-call %CommonToolDir%\bat\set-SparkOptions-by.bat
+call %CommonToolDir%\bat\set-SparkOptions-by.bat %SparkOptions%
 
 echo. & echo Current SparkOptions=%SparkOptions% & echo.
 

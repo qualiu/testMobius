@@ -9,14 +9,14 @@ call %CommonToolDir%\bat\find-MobiusTestExePath-in.bat %ShellDir%
 call %CommonToolDir%\bat\check-exist-path.bat %MobiusTestExePath% MobiusTestExePath || exit /b 1
 
 call %CommonToolDir%\bat\find-jars-in-dir-to-var %MobiusCodeRoot%\build\dependencies JarOption
-if not "%JarOption%" == "" set "JarOption=--jars %JarOption%"
+if not "%JarOption%" == "" ( set "JarOption=--jars %JarOption%" ) else ( echo ###### Not found jars in %%MobiusCodeRoot%%\build\dependencies : %MobiusCodeRoot%\build\dependencies , you can set JarOption or in SparkOptions & sleep 3 )
 
 set SparkLocalOptions=--executor-cores 2 --driver-cores 2 --executor-memory 2g --driver-memory 2g %JarOption%
 
 set SparkClusterOptions=--master yarn-cluster --num-executors 100 --executor-cores 28 --executor-memory 30G --driver-memory 32G 
 
 echo ### You can enable/disable RIO socket by add/remove : --conf spark.mobius.CSharp.socketType=Rio
-call %CommonToolDir%\bat\set-SparkOptions-by.bat
+call %CommonToolDir%\bat\set-SparkOptions-by.bat %SparkOptions%
 
 echo. & echo Current SparkOptions=%SparkOptions% & echo.
 

@@ -74,8 +74,33 @@ Tips :
   - You can set SparkOptions=*** (following scripts will show you) with/without : `--conf spark.mobius.CSharp.socketType=Rio`
   - You can clean and build specified type : `csharp\Clean.cmd & csharp\Build.cmd Release x64`
   - You can `set TestExePath=xxxx\bin\Release` or `set TestExePath=xxxx\bin\x64\Release`
-  * Socket : `scripts\memory\local-Riosocket-test-by-socket.bat 1`
-  * Kafka : `scripts\memory\local-Riosocket-kafka-test.bat 1`
-
-
-
+  * Start Socket and submit test: [`scripts\memory\local-Riosocket-test-by-socket.bat 1`](https://github.com/qualiu/testMobius/blob/master/scripts/memory/local-Riosocket-test-by-socket.bat)
+  * Download/init/start Kafka and submit test: [`scripts\memory\local-Riosocket-kafka-test.bat 1`](https://github.com/qualiu/testMobius/blob/master/scripts/memory/local-Riosocket-kafka-test.bat)
+  - You can also directly use the exe with wrapper(.bat) and see the usage (just run without parameters):
+    * [csharp\kafkaStreamTest\test.bat as wrapper of kafkaStreamTest.exe to submit on local or cluster ](https://github.com/qualiu/testMobius/blob/master/csharp/kafkaStreamTest/test.bat)
+    * [kafkaStreamTest.exe UnionTopicTest](https://github.com/qualiu/testMobius/blob/master/csharp/kafkaStreamTest/UnionTopicTest.cs)
+    * [kafkaStreamTest.exe WindowSlideTest](https://github.com/qualiu/testMobius/blob/master/csharp/kafkaStreamTest/WindowSlideTest.cs)
+    * [csharp\testKeyValueStream\test.bat as wrapper of testKeyValueStream.exe to submit on local or cluster](https://github.com/qualiu/testMobius/blob/master/csharp/testKeyValueStream/test.bat)
+    * [testKeyValueStream.exe](https://github.com/qualiu/testMobius/blob/master/csharp/testKeyValueStream/ArgOptions.cs)
+    * [SourceLinesSocket.exe as Socket source](https://github.com/qualiu/testMobius/blob/master/csharp/SourceLinesSocket/PowerArgOptions.cs)
+    
+6. Local debug mode experience example with RIOSocket test in Visual Studio
+  * Assume that you've build {Mobius} source
+  * Now build {testMobius}, start socket source, submit test, and experience debug mode in Visual Studio :
+  ```
+  csharp\update-MobiusCodeRoot-and-project-files.bat {Mobius}
+  csharp\Clean.cmd
+  csharp\Build.cmd Debug
+  
+  csharp\SourceLinesSocket\bin\Debug\SourceLinesSocket.exe -Port 9112 -RunningSeconds 900
+  
+  set SparkOptions=--executor-cores 2 --driver-cores 2 --executor-memory 1g --driver-memory 1g --conf spark.mobius.CSharp.socketType=Rio
+  
+  scripts\xtra\local-mode-debug-testKeyValue-socket.bat -p 9112
+  ```
+  * Open csharp\allSubmitingTest.sln In Visual Studio :
+    - Set as StartUp Project : testKeyValueStream.csproj
+     - Menu "Project" -> "testKeyValueStream properties" -> Debug -> Command line args : -p 9112 
+  * Notes: 
+    - You can add and change the parameters, read the usages just run without parameters : `SourceLinesSocket.exe`  or `csharp\testKeyValueStream\bin\Debug\testKeyValueStream.exe` or `csharp\testKeyValueStream\test.bat`
+    - In fact, there's a tool : [scripts\tool\set-debug-mode-path-port.bat](https://github.com/qualiu/testMobius/blob/master/scripts/tool/set-debug-mode-path-port.bat) to Add/Change/Uncomment path and port settings. You can use it then submit your job, start Visual Studio.

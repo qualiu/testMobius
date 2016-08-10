@@ -7,12 +7,12 @@ set CommonToolDir=%ShellDir%\..\..\tools
 call %CommonToolDir%\set-common-dir-and-tools.bat
 
 call %CommonToolDir%\bat\find-MobiusTestExePath-in.bat %MobiusTestRoot%\csharp\kafkaStreamTest
-call %CommonToolDir%\bat\check-exist-path.bat %MobiusTestExePath%% MobiusTestExePath || exit /b 1
+call %CommonToolDir%\bat\check-exist-path.bat %MobiusTestExePath% MobiusTestExePath || exit /b 1
 
 call %MobiusTestRoot%\scripts\tool\warn-dll-exe-x64-x86.bat %MobiusTestExeDir%
 
 call %CommonToolDir%\bat\find-jars-in-dir-to-var %MobiusCodeRoot%\build\dependencies JarOption
-if not "%JarOption%" == "" set "JarOption=--jars %JarOption%"
+if not "%JarOption%" == "" ( set "JarOption=--jars %JarOption%" ) else ( echo ###### Not found jars in %%MobiusCodeRoot%%\build\dependencies : %MobiusCodeRoot%\build\dependencies , you can set JarOption or in SparkOptions& sleep 3 )
 
 if not defined SparkOptions set SparkOptions=--executor-cores 2 --driver-cores 2 --executor-memory 1g --driver-memory 1g %JarOption% --conf spark.mobius.CSharp.socketType=Rio 
 

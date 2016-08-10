@@ -12,7 +12,7 @@ set SparkLocalOptions=--num-executors 8 --executor-cores 4 --executor-memory 8G 
 
 set SparkClusterOptions=--master yarn-cluster --num-executors 100 --executor-cores 28 --executor-memory 30G --driver-memory 32G --conf spark.python.worker.connectionTimeoutMs=3000000 --conf spark.streaming.kafka.maxRetries=300 --conf spark.yarn.executor.memoryOverhead=18000 --conf spark.streaming.kafka.maxRetries=20 --conf spark.yarn.appMasterEnv.PYSPARK_PYTHON=d:/data/anaconda2/python.exe
 
-call %CommonToolDir%\bat\set-SparkOptions-by.bat
+call %CommonToolDir%\bat\set-SparkOptions-by.bat %SparkOptions%
 echo. & echo Current SparkOptions=%SparkOptions% & echo.
 
 if "%SPARK_HOME%" == "" (
