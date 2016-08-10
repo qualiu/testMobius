@@ -6,8 +6,8 @@ if %ShellDir:~-1%==\ set ShellDir=%ShellDir:~0,-1%
 set SocketCodeDir=%ShellDir%\..\SourceLinesSocket
 for /f %%g in (' for /R %SocketCodeDir% %%f in ^(*.exe^) do @echo %%f ^| findstr /I /C:vshost /V ^| findstr /I /C:obj /V ') do set SourceSocketExe=%%g
 
-for /f %%g in (' for /R %ShellDir% %%f in ^( *.exe ^) do @echo %%f ^| findstr /I /C:vshost /V ^| findstr /I /C:obj /V ') do set TestExePath=%%g
-for %%a in ("%TestExePath%") do ( 
+for /f %%g in (' for /R %ShellDir% %%f in ^( *.exe ^) do @echo %%f ^| findstr /I /C:vshost /V ^| findstr /I /C:obj /V ') do set MobiusTestExePath=%%g
+for %%a in ("%MobiusTestExePath%") do ( 
     set ExeDir=%%~dpa
     set ExeName=%%~nxa
 )
@@ -18,16 +18,16 @@ call %CommonToolDir%\set-local-sparkCLR-env.bat %MobiusCodeRoot% || exit /b 1
 
 call %CommonToolDir%\bat\check-exist-path.bat %SourceSocketExe% "SourceSocketExe" || exit /b 1
 call %CommonToolDir%\bat\check-exist-path.bat %SPARKCLR_HOME%\scripts\sparkclr-submit.cmd "sparkclr-submit.cmd"  || exit /b 1
-call %CommonToolDir%\bat\check-exist-path.bat %TestExePath% TestExePath || exit /b 1
+call %CommonToolDir%\bat\check-exist-path.bat %MobiusTestExePath% MobiusTestExePath || exit /b 1
 call %CommonToolDir%\bat\check-exist-path.bat %ExeDir% ExeDir || exit /b 1
 
 set AllArgs=%*
 if "%~1" == "" (
-    echo No parameter, Usage as following, run : %TestExePath%
-    call %TestExePath%
+    echo No parameter, Usage as following, run : %MobiusTestExePath%
+    call %MobiusTestExePath%
     echo Example parameters : -p 9112 -e 1 -r 30 -b 1 -w 3 -s 3 -n 50 -c d:\tmp\checkDir -d 1 
     echo Parameters like host, port and validation are according to source socket tool : %SourceSocketExe%
-    echo Test usage just run : %TestExePath%
+    echo Test usage just run : %MobiusTestExePath%
     exit /b 5
 )
 
@@ -49,7 +49,7 @@ popd
 
 echo ======================================================
 echo More source socket usages just run : %SourceSocketExe%
-echo Test tool usages just run : %TestExePath%
+echo Test tool usages just run : %MobiusTestExePath%
 
 exit /b 0
 

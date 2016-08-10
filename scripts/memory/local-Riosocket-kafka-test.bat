@@ -6,10 +6,10 @@ if %ShellDir:~-1%==\ set ShellDir=%ShellDir:~0,-1%
 set CommonToolDir=%ShellDir%\..\..\tools
 call %CommonToolDir%\set-common-dir-and-tools.bat
 
-call %CommonToolDir%\bat\find-TestExePath-in.bat %MobiusTestRoot%\csharp\kafkaStreamTest
-call %CommonToolDir%\bat\check-exist-path.bat %TestExePath%% TestExePath || exit /b 1
+call %CommonToolDir%\bat\find-MobiusTestExePath-in.bat %MobiusTestRoot%\csharp\kafkaStreamTest
+call %CommonToolDir%\bat\check-exist-path.bat %MobiusTestExePath%% MobiusTestExePath || exit /b 1
 
-call %MobiusTestRoot%\scripts\tool\warn-dll-exe-x64-x86.bat %TestExeDir%
+call %MobiusTestRoot%\scripts\tool\warn-dll-exe-x64-x86.bat %MobiusTestExeDir%
 
 call %CommonToolDir%\bat\find-jars-in-dir-to-var %MobiusCodeRoot%\build\dependencies JarOption
 if not "%JarOption%" == "" set "JarOption=--jars %JarOption%"
@@ -20,7 +20,7 @@ if "%~1" == "" (
     echo Usage   : %0   TestTimes [TopicName]  [EachTestRunSeconds:30] [ElementCountInArray:10240] [SendInterval:100]
     echo Example : %0   5          test             60                       20480                      100
     echo SourceLinesSocket usage : just run %SourceSocketExe%
-    echo TestExe usage : just run %TestExePath%
+    echo TestExe usage : just run %MobiusTestExePath%
     echo You can set SparkOptions to avoid default. Current SparkOptions=%SparkOptions%
     exit /b 5
 )
@@ -44,4 +44,4 @@ if %KafkaServerCount% LSS 1 (
 
 call %MobiusTestRoot%\csharp\kafkaStreamTest\test.bat WindowSlideTest -Topics %TopicName% -t %TestTimes% -e %ElementCountInArray% -r %EachTestRunSeconds% -w 6 -s 1 -c d:\tmp\testKafkaKVCheckDir -d 1
 
-rem pskill -it "%TestExeName%.*%TopicName%"
+rem pskill -it "%MobiusTestExeName%.*%TopicName%"

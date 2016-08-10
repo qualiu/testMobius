@@ -26,10 +26,10 @@ set BufferIncrease=%4
 if "%BufferIncrease%" == "" set BufferIncrease=%InitBufferSize%
 if "%TestTimes%" == "" set TestTimes=1
 
-if "%TestExePath%"=="" for /f %%g in (' for /R %ShellDir% %%f in ^( *.exe ^) do @echo %%f ^| findstr /I /C:vshost /V ^| findstr /I /C:obj /V ') do set TestExePath=%%g
-call %CommonToolDir%\bat\check-exist-path.bat "%TestExePath%" TestExePath || exit /b 1
+if "%MobiusTestExePath%"=="" for /f %%g in (' for /R %ShellDir% %%f in ^( *.exe ^) do @echo %%f ^| findstr /I /C:vshost /V ^| findstr /I /C:obj /V ') do set MobiusTestExePath=%%g
+call %CommonToolDir%\bat\check-exist-path.bat "%MobiusTestExePath%" MobiusTestExePath || exit /b 1
 
-for %%a in ("%TestExePath%") do ( 
+for %%a in ("%MobiusTestExePath%") do ( 
     set ExeDir=%%~dpa
     set ExeName=%%~nxa
 )

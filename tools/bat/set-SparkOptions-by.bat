@@ -1,5 +1,5 @@
 @echo off
-echo You set SparkOptions SparkClusterOptions SparkLocalOptions TestExePath to avoid default auto-detection.
+echo You set SparkOptions SparkClusterOptions SparkLocalOptions MobiusTestExePath to avoid default auto-detection.
 echo Mobius configuration like --conf spark.mobius.xxx instruction : https://github.com/Microsoft/Mobius/blob/master/notes/configuration-mobius.md
 echo ### You can set SparkOptions to avoid default local mode setting. Examples :
 echo.
@@ -7,7 +7,7 @@ echo ### Cluster Mode : set SparkOptions=%SparkClusterOptions%
 echo.
 echo ### Local Mode : set SparkOptions=%SparkLocalOptions%
 echo.
-echo ### You can set TestExePath to avoid detected: %TestExePath% 
+echo ### You can set MobiusTestExePath to avoid detected: %MobiusTestExePath% 
 
 rem set default SparkOptions if not empty %SparkOptions%
 echo ##%SparkOptions% | findstr /I /R "[0-9a-z]" >nul || set SparkOptions=%SparkLocalOptions%
@@ -17,8 +17,8 @@ call %CommonToolDir%\bat\get-appendix-name-from %SparkOptions%
 if not "%spark.app.name%" == "" (
     set appNameOption=--name %spark.app.name%
 ) else (
-    if not "%TestJarName%" == "" set appNameOption=--name %TestJarName%__%AppNameAppendix%
-    if not "%TestExeName%" == "" set appNameOption=--name %TestExeName%__%AppNameAppendix%
+    if not "%MobiusTestJarName%" == "" set appNameOption=--name %MobiusTestJarName%__%AppNameAppendix%
+    if not "%MobiusTestExeName%" == "" set appNameOption=--name %MobiusTestExeName%__%AppNameAppendix%
 )
 
 echo ### You can set spark.app.name to avoid default : spark.app.name = %spark.app.name%  ; appNameOption = %appNameOption%

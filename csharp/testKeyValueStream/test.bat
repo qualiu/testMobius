@@ -4,8 +4,8 @@ set ShellDir=%~dp0
 if %ShellDir:~-1%==\ set ShellDir=%ShellDir:~0,-1%
 set CommonToolDir=%ShellDir%\..\..\tools
 call %CommonToolDir%\check-set-tool-path.bat
-call %CommonToolDir%\bat\find-TestExePath-in.bat %ShellDir%
-call %CommonToolDir%\bat\check-exist-path.bat %TestExePath% TestExePath || exit /b 1
+call %CommonToolDir%\bat\find-MobiusTestExePath-in.bat %ShellDir%
+call %CommonToolDir%\bat\check-exist-path.bat %MobiusTestExePath% MobiusTestExePath || exit /b 1
 
 set SparkLocalOptions=--executor-cores 2 --driver-cores 2 --executor-memory 1g --driver-memory 1g
 
@@ -26,18 +26,18 @@ call %CommonToolDir%\bat\check-exist-path.bat %SPARKCLR_HOME%\scripts\sparkclr-s
 
 set AllArgs=%*
 if "%~1" == "" (
-    echo No parameter, Usage as following, run : %TestExePath%
-    call %TestExePath%
+    echo No parameter, Usage as following, run : %MobiusTestExePath%
+    call %MobiusTestExePath%
     echo Example parameters : -p 9112 -e 1 -r 30 -b 1 -w 3 -s 3 -n 50 -c d:\tmp\testKVCheckDir -d 1
-    echo Test usage just run : %TestExePath%
+    echo Test usage just run : %MobiusTestExePath%
     exit /b 5
 )
 
-pushd %TestExeDir%
-echo %SPARKCLR_HOME%\scripts\sparkclr-submit.cmd %SparkOptions% --exe %TestExeName% %CD% %AllArgs%
-call %SPARKCLR_HOME%\scripts\sparkclr-submit.cmd %SparkOptions% --exe %TestExeName% %CD% %AllArgs%
+pushd %MobiusTestExeDir%
+echo %SPARKCLR_HOME%\scripts\sparkclr-submit.cmd %SparkOptions% --exe %MobiusTestExeName% %CD% %AllArgs%
+call %SPARKCLR_HOME%\scripts\sparkclr-submit.cmd %SparkOptions% --exe %MobiusTestExeName% %CD% %AllArgs%
 popd
 
 
 echo ======================================================
-echo Test tool usages just run : %TestExePath%
+echo Test tool usages just run : %MobiusTestExePath%

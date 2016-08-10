@@ -4,7 +4,7 @@ set ShellDir=%~dp0
 if %ShellDir:~-1%==\ set ShellDir=%ShellDir:~0,-1%
 set CommonToolDir=%ShellDir%\..\..\tools
 call %CommonToolDir%\check-set-tool-path.bat
-call %CommonToolDir%\bat\find-TestExePath-in.bat %ShellDir%
+call %CommonToolDir%\bat\find-MobiusTestExePath-in.bat %ShellDir%
 
 set SparkLocalOptions=--num-executors 8 --executor-cores 4 --executor-memory 8G --driver-memory 10G --conf spark.streaming.nao.loadExistingFiles=true --conf spark.streaming.kafka.maxRetries=300 --conf spark.yarn.executor.memoryOverhead=18000 --conf spark.streaming.kafka.maxRetries=20 --jars %MobiusCodeRoot%\build\dependencies\spark-streaming-kafka-assembly_2.10-1.6.1.jar --conf spark.mobius.streaming.kafka.CSharpReader.enabled=true
 
@@ -22,16 +22,16 @@ if "%SPARK_HOME%" == "" (
 )
 
 call %CommonToolDir%\bat\check-exist-path.bat %SPARKCLR_HOME%\scripts\sparkclr-submit.cmd || exit /b 1
-call %CommonToolDir%\bat\check-exist-path.bat %TestExePath% TestExePath || exit /b 1
+call %CommonToolDir%\bat\check-exist-path.bat %MobiusTestExePath% MobiusTestExePath || exit /b 1
 
 set AllArgs=%*
 if "%~1" == "" (
-    echo No parameter, Usage as following, run : %TestExePath%
-    call %TestExePath%
+    echo No parameter, Usage as following, run : %MobiusTestExePath%
+    call %MobiusTestExePath%
     exit /b 5
 )
 
-pushd %TestExeDir%
-echo %SPARKCLR_HOME%\scripts\sparkclr-submit.cmd %SparkOptions% --exe %TestExeName% %CD% %AllArgs%
-call %SPARKCLR_HOME%\scripts\sparkclr-submit.cmd %SparkOptions% --exe %TestExeName% %CD% %AllArgs%
+pushd %MobiusTestExeDir%
+echo %SPARKCLR_HOME%\scripts\sparkclr-submit.cmd %SparkOptions% --exe %MobiusTestExeName% %CD% %AllArgs%
+call %SPARKCLR_HOME%\scripts\sparkclr-submit.cmd %SparkOptions% --exe %MobiusTestExeName% %CD% %AllArgs%
 popd

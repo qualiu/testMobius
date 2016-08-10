@@ -6,10 +6,10 @@ if %ShellDir:~-1%==\ set ShellDir=%ShellDir:~0,-1%
 set CommonToolDir=%ShellDir%\..\..\tools
 call %CommonToolDir%\set-common-dir-and-tools.bat
 
-call %CommonToolDir%\bat\find-TestExePath-in.bat %MobiusTestRoot%\csharp\testKeyValueStream
-call %CommonToolDir%\bat\check-exist-path.bat %TestExePath%% TestExePath || exit /b 1
+call %CommonToolDir%\bat\find-MobiusTestExePath-in.bat %MobiusTestRoot%\csharp\testKeyValueStream
+call %CommonToolDir%\bat\check-exist-path.bat %MobiusTestExePath%% MobiusTestExePath || exit /b 1
 
-call %MobiusTestRoot%\scripts\tool\warn-dll-exe-x64-x86.bat %TestExeDir%
+call %MobiusTestRoot%\scripts\tool\warn-dll-exe-x64-x86.bat %MobiusTestExeDir%
 
 set SocketCodeDir=%MobiusTestRoot%\csharp\SourceLinesSocket
 for /f %%g in (' for /R %SocketCodeDir% %%f in ^(*.exe^) do @echo %%f ^| findstr /I /C:vshost /V ^| findstr /I /C:obj /V ') do set SourceSocketExe=%%g
@@ -22,7 +22,7 @@ if "%~1" == "" (
     echo Usage   : %0   TestTimes [TestPort:9278]  [EachTestRunSeconds:30] [ElementCountInArray:10240] [SendInterval:100]
     echo Example : %0   5          9278             60                       20480                      100
     echo SourceLinesSocket usage : just run %SourceSocketExe%
-    echo TestExe usage : just run %TestExePath%
+    echo TestExe usage : just run %MobiusTestExePath%
     echo You can set SparkOptions to avoid default. Current SparkOptions=%SparkOptions%
     exit /b 5
 )
@@ -40,4 +40,4 @@ start cmd /c "%SourceSocketExe%" -Port %TestPort% -n %MessagesPerConnection% -s 
 call %MobiusTestRoot%\csharp\testKeyValueStream\test.bat -p %TestPort% -t %TestTimes% -e %ElementCountInArray% -r %EachTestRunSeconds% -w 6 -s 1 -c d:\tmp\testKVCheckDir -d 1
 
 echo Finished test, check and kill SourceLinesSocket and TestExe(often already quit)
-pskill -it "%SourceSocketExeName%.*%TestPort%|%TestExeName%.*%TestPort%"
+pskill -it "%SourceSocketExeName%.*%TestPort%|%MobiusTestExeName%.*%TestPort%"

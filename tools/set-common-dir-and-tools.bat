@@ -1,9 +1,9 @@
 @echo off
 rem This script defines common tools path and software save directory.
 rem Tools like wget tar ...
-set ShellDir=%~dp0
-if %ShellDir:~-1%==\ set ShellDir=%ShellDir:~0,-1%
-set CommonToolDir=%ShellDir%
+set ThisShellDir=%~dp0
+if %ThisShellDir:~-1%==\ set ThisShellDir=%ThisShellDir:~0,-1%
+set CommonToolDir=%ThisShellDir%
 
 set TarTool=%CommonToolDir%\gnu\bsdtar.exe
 
