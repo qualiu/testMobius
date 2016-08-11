@@ -8,7 +8,6 @@ call %CommonToolDir%\set-common-dir-and-tools.bat
 
 call %CommonToolDir%\bat\find-MobiusTestExePath-in.bat %MobiusTestRoot%\csharp\testKeyValueStream
 call %CommonToolDir%\bat\check-exist-path.bat %MobiusTestExePath% MobiusTestExePath || exit /b 1
-
 call %MobiusTestRoot%\scripts\tool\warn-dll-exe-x64-x86.bat %MobiusTestExeDir%
 
 set SocketCodeDir=%MobiusTestRoot%\csharp\SourceLinesSocket
@@ -18,26 +17,31 @@ for %%a in ( %SourceSocketExe% ) do set "SourceSocketExeName=%%~nxa"
 
 if not defined SparkOptions set SparkOptions=--executor-cores 2 --driver-cores 2 --executor-memory 1g --driver-memory 1g --conf spark.mobius.CSharp.socketType=Rio
 
+if [%1]==[] ( set "TestTimes=1" ) else ( set "TestTimes=%1" )
+if [%2]==[] ( set "TestPort=9278" ) else ( set "TestPort=%2" )
+if [%3]==[] ( set "EachTestRunSeconds=30" ) else ( set "EachTestRunSeconds=%3" )
+if [%4]==[] ( set "ElementCountInArray=10240" ) else ( set "ElementCountInArray=%4" )
+if [%5]==[] ( set "SendInterval=100" ) else ( set "SendInterval=%5" )
+
+rem set ElementCountInArray to accelerate memory problem if has
+set /a MessagesPerConnection=%EachTestRunSeconds% * 1000 / %SendInterval%
+if not defined MobiusTestArgs set MobiusTestArgs=-p %TestPort% -t %TestTimes% -e %ElementCountInArray% -r %EachTestRunSeconds% -w 6 -s 1 -c d:\tmp\testKVCheckDir -d 1
+
 if "%~1" == "" (
     echo Usage   : %0   TestTimes [TestPort:9278]  [EachTestRunSeconds:30] [ElementCountInArray:10240] [SendInterval:100]
     echo Example : %0   5          9278             60                       20480                      100
     echo SourceLinesSocket usage : just run %SourceSocketExe%
     echo TestExe usage : just run %MobiusTestExePath%
-    echo You can set SparkOptions to avoid default. Current SparkOptions=%SparkOptions%
+    echo You can set args for %MobiusTestExeName% by set MobiusTestArgs=%MobiusTestArgs% | lzmw -PA -ie "\bset\s+|MobiusTest\w+|SparkOption\w*|(cluster|local)\s*mode|([\w\.]*\.\w*mobius\w*\.[\w\.]*)"
+    echo You can set SparkOptions to avoid default. Current SparkOptions=%SparkOptions% | lzmw -PA -ie "\bset\s+|MobiusTest\w+|SparkOption\w*|(cluster|local)\s*mode|([\w\.]*\.\w*mobius\w*\.[\w\.]*)"
     exit /b 5
 )
 
-set TestTimes=%1
-if [%2]==[] ( set "TestPort=9278" ) else ( set "TestPort=%2" )
-if [%3]==[] ( set EachTestRunSeconds=30 ) else ( set EachTestRunSeconds=%3 )
-if [%4]==[] ( set ElementCountInArray=10240 ) else ( set ElementCountInArray=%4 )
-if [%5]==[] ( set SendInterval=100 ) else ( set SendInterval=%5 )
-
-rem set ElementCountInArray to accelerate memory problem if has
-set /a MessagesPerConnection=%EachTestRunSeconds% * 1000 / %SendInterval%
-
+echo Check and stop existed same port socket by pattern "%SourceSocketExeName%.*%TestPort%"
+call pskill -it "%SourceSocketExeName%.*%TestPort%"
 start cmd /c "%SourceSocketExe%" -Port %TestPort% -n %MessagesPerConnection% -s %SendInterval% -RunningSeconds 0 -QuitIfExceededAny 0 -PauseSecondsAtDrop 9 
-call %MobiusTestRoot%\csharp\testKeyValueStream\test.bat -p %TestPort% -t %TestTimes% -e %ElementCountInArray% -r %EachTestRunSeconds% -w 6 -s 1 -c d:\tmp\testKVCheckDir -d 1
 
-echo Finished test, check and kill SourceLinesSocket and TestExe(often already quit)
+call %MobiusTestRoot%\csharp\testKeyValueStream\test.bat %MobiusTestArgs% 2>&1 | lzmw -ie "\w*exception|\[(WARN|ERROR|FATAL)\]|warn\w*|spark\w*-submit|[\w\.]*\.(\w*mobius\w*)\.[\w\.]*|\w*RIO\w*" -P
+
+echo Finished test, check and kill SourceLinesSocket and TestExe.
 pskill -it "%SourceSocketExeName%.*%TestPort%|%MobiusTestExeName%.*%TestPort%"

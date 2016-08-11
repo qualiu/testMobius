@@ -23,10 +23,10 @@ function get_one_log_path() {
     appUrl=$1
     appName=$(echo "$appUrl" | awk '{match($0, /.*(application_[0-9a-zA-Z_]+).*/, arr); print arr[1]; }')
     ## echo appUrl=$1 && return ## for debug
-    curl "$appUrl" 2>/dev/null | lzmw -it ".*?\b(bn\w+).*logs.*" -o 'robocopy \\\\$1\\data\\yarn\\nm-log-dir\\$appName $YarnLogSaveDir\\$appName--$1 /E /NJH /NJS /NDL /XO' -PAC | lzmw -x '$appName' -o "$appName" -PAC | lzmw -x '$YarnLogSaveDir' -o "$YarnLogSaveDir" -PAC
-    #curl "$appUrl" 2>/dev/null | lzmw -it ".*?\b(bn\w+).*logs.*" -o 'robocopy \\\\$1\\data\\yarn\\nm-log-dir\\'"$appName"' d:\\logsBuf\\'"$appName"'--$1 /E' -PAC 
-    #curl "$appUrl" 2>/dev/null | lzmw -it ".*?\b(bn\w+).*logs.*" -o 'robocopy \\\\$1\\data\\yarn\\nm-log-dir\\'"$appName"' d:\\logsBuf\\'"$appName--$1"' /E' -PAC 
-    #curl "$appUrl" 2>/dev/null | lzmw -it ".*?\b(bn\w+).*logs.*" -o 'robocopy \\\\$1\\data\\yarn\\nm-log-dir\\'"$appName"' d:\\logsBuf /E' -PAC 
+    curl "$appUrl" 2>/dev/null | lzmw -it ".*?\b(bn\w{5,}).*logs.*" -o 'robocopy \\\\$1\\data\\yarn\\nm-log-dir\\$appName $YarnLogSaveDir\\$appName--$1 /E /NJH /NJS /NDL /XO' -PAC | lzmw -x '$appName' -o "$appName" -PAC | lzmw -x '$YarnLogSaveDir' -o "$YarnLogSaveDir" -PAC
+    #curl "$appUrl" 2>/dev/null | lzmw -it ".*?\b(bn\w{5,}).*logs.*" -o 'robocopy \\\\$1\\data\\yarn\\nm-log-dir\\'"$appName"' d:\\logsBuf\\'"$appName"'--$1 /E' -PAC 
+    #curl "$appUrl" 2>/dev/null | lzmw -it ".*?\b(bn\w{5,}).*logs.*" -o 'robocopy \\\\$1\\data\\yarn\\nm-log-dir\\'"$appName"' d:\\logsBuf\\'"$appName--$1"' /E' -PAC 
+    #curl "$appUrl" 2>/dev/null | lzmw -it ".*?\b(bn\w{5,}).*logs.*" -o 'robocopy \\\\$1\\data\\yarn\\nm-log-dir\\'"$appName"' d:\\logsBuf /E' -PAC 
 }
 
 ## get one app time cost : full url or combine with environment variable YarnAppUrlHeader

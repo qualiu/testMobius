@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using CommonTestUtils;
 using log4net;
@@ -31,13 +33,23 @@ namespace kafkaStreamTest
 
         protected Dictionary<string, long> offsetsRange;
 
-
         public abstract void Run(String[] args, Lazy<SparkContext> sparkContext);
 
         public virtual bool ParseArgs(string[] args)
         {
             var parsedOK = false;
             Options = ArgParser.Parse<ArgClass>(args, out parsedOK);
+
+            // Add wait checking here as this method is definitely called by all derived classes.
+            if (parsedOK && Options.WaitSecondsForAttachDebug > 0)
+            {
+                var waitBegin = DateTime.Now;
+                var waitEnd = waitBegin + TimeSpan.FromSeconds(Options.WaitSecondsForAttachDebug);
+                var currentPID = Process.GetCurrentProcess().Id;
+                Logger.LogWarn($"Will wait {Options.WaitSecondsForAttachDebug} seconds for you to debug this process : please attach PID {currentPID} before {waitEnd}");
+                Thread.Sleep(Options.WaitSecondsForAttachDebug * 1000);
+            }
+
             return parsedOK;
         }
 

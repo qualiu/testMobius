@@ -60,6 +60,9 @@ namespace kafkaStreamTest
         [ArgShortcut("d"), ArgDefaultValue(false), ArgDescription("delete check point directory at first")]
         public bool DeleteCheckPointDirectory { get; set; }
 
+        [ArgDefaultValue(0), ArgDescription("Wait seconds for user to attach this process and debug.")]
+        public int WaitSecondsForAttachDebug { get; set; }
+
         #endregion
 
         [HelpHook, ArgDescription("Shows this help"), ArgShortcut("-h")]

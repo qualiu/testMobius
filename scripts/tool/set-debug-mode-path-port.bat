@@ -61,6 +61,8 @@ for /F "tokens=*" %%f in ('lzmw -rp %todoDir% -f "^App.config$|\.exe\.config$" -
         lzmw -p %%f -it "<^!--\s*(<appSettings>)" -o "$1" -S -R
         echo.
         lzmw -p %%f -it "(</appSettings>)\s*-->" -o "$1" -S -R
+        echo.
+        call %ShellDir%\enable-debug-app-setting-in-dir.bat %%f -R
     )
 )
 echo.

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Text.RegularExpressions;
+using System.Threading;
 using CommonTestUtils;
 using Microsoft.Spark.CSharp.Core;
 using Microsoft.Spark.CSharp.Streaming;
@@ -25,6 +28,15 @@ namespace testKeyValueStream
             if (!isParseOK)
             {
                 return;
+            }
+
+            if (Options.WaitSecondsForAttachDebug > 0)
+            {
+                var waitBegin = DateTime.Now;
+                var waitEnd = waitBegin + TimeSpan.FromSeconds(Options.WaitSecondsForAttachDebug);
+                var currentPID = Process.GetCurrentProcess().Id;
+                Logger.LogWarn($"Will wait {Options.WaitSecondsForAttachDebug} seconds for you to debug this process : please attach PID {currentPID} before {waitEnd}");
+                Thread.Sleep(Options.WaitSecondsForAttachDebug * 1000);
             }
 
             Logger.LogInfo("will connect " + Options.Host + ":" + Options.Port + " batchSeconds = " + Options.BatchSeconds + " s , windowSeconds = " + Options.WindowSeconds + " s, slideSeconds = " + Options.SlideSeconds + " s."

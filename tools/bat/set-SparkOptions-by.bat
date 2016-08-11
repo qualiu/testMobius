@@ -1,13 +1,13 @@
 @echo off
 echo You set SparkOptions SparkClusterOptions SparkLocalOptions MobiusTestExePath to avoid default auto-detection.
-echo Mobius configuration like --conf spark.mobius.xxx instruction : https://github.com/Microsoft/Mobius/blob/master/notes/configuration-mobius.md
+echo Mobius configuration like --conf spark.mobius.xxx instruction : https://github.com/Microsoft/Mobius/blob/master/notes/configuration-mobius.md | lzmw -PA -ie "https:\S+"
 echo ### You can set SparkOptions to avoid default local mode setting. Examples :
 echo.
-echo ### Cluster Mode : set SparkOptions=%SparkClusterOptions%
+echo ### Cluster Mode : set SparkOptions=%SparkClusterOptions%| lzmw -PA -ie "\bset\s+|MobiusTest\w+|SparkOption\w*|(cluster|local)\s*mode|([\w\.]*\.\w*mobius\w*\.[\w\.]*)"
 echo.
-echo ### Local Mode : set SparkOptions=%SparkLocalOptions%
+echo ### Local Mode : set SparkOptions=%SparkLocalOptions% | lzmw -PA -ie "\bset\s+|MobiusTest\w+|SparkOption\w*|(cluster|local)\s*mode|([\w\.]*\.\w*mobius\w*\.[\w\.]*)"
 echo.
-echo ### You can set MobiusTestExePath to avoid detected: %MobiusTestExePath% 
+echo ### You can set MobiusTestExePath to avoid detected: %MobiusTestExePath% | lzmw -PA -ie "\bset\s+|MobiusTest\w+|SparkOption\w*|(cluster|local)\s*mode|([\w\.]*\.\w*mobius\w*\.[\w\.]*)"
 
 rem set default SparkOptions if not empty %SparkOptions%
 echo ##%* | findstr /I /R "[0-9a-z]" >nul || set SparkOptions=%SparkLocalOptions%

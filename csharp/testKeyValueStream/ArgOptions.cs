@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CommonTestUtils;
 using PowerArgs;
@@ -63,9 +64,11 @@ namespace testKeyValueStream
         [ArgDefaultValue(true), ArgDescription("Print received lines")]
         public bool PrintReceivedLines { get; set; }
 
+        [ArgDefaultValue(0), ArgDescription("Wait seconds for user to attach this process and debug.")]
+        public int WaitSecondsForAttachDebug { get; set; }
+
         [HelpHook, ArgDescription("Shows this help"), ArgShortcut("-?")]
         public bool Help { get; set; }
-
 
         public bool IsReduceByKey()
         {

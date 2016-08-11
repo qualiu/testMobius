@@ -17,14 +17,21 @@ fi
 function get_one_time_cost() {
     appUrl=$1
     ## echo appUrl=$1 && return ## for debug
-    curl "$appUrl" 2>/dev/null | lzmw -it "<.*?>" -o " " -a -PAC | lzmw -S -it "^.*?Application\s*(app\S+).*Name\s*:\s*([^\r\n]+).*status[^\r\n]*:\s*(kill\w*|fail \w*|succ\w*).*elapsed.*?(\d+(h\w*|min\w*|sec\w* )[^\r\n]*).*" -o '$1\t Name=$2 \t status=$3 \t used=$4' -PAC | awk -v appUrl="$appUrl" 'BEGIN{IGNORECASE=1;} { 
-     match($0, /application\w*/, app);
-     match($0, /name\s*=\s*(\S+)/,name);
-     match($0, /status\s*=\s*(\w+)/,  status);
-     match($0, /([0-9]+)\s*h[ours]*/, ha);
-     match($0, /([0-9]+)\s*min/, ma); 
-     match($0, /([0-9]+)\s*sec/, sa); 
-     if(ha[1]+ma[1]+sa[1]>0) printf("%s %s %ds %s : %s\n",  app[0], status[1], ha[1]*3600 + ma[1]*60 +sa[1], name[1], appUrl);}' ;
+    curl "$appUrl" 2>/dev/null | lzmw -it "<.*?>" -o " " -a -PAC | lzmw -S -it ":\s*[\r\n]+\s*" -o ":" -PAC \
+     | lzmw -it "application|Name\s*:|status|elapse" -PAC \
+     | awk -v appUrl="$appUrl" 'BEGIN{IGNORECASE=1; cost=0; timeText=""; appId=""; appName=""; status=""; } 
+    { 
+        if(match($0, /Application\s+(application\w+)/, ta)) appId=ta[1];
+        if(match($0, /Name\s*:\s*(\S+)/, ta)) appName=ta[1];
+        if(match($0, /Status[^:]*:\s*(\w+)/, ta)) status=ta[1];
+        if(match($0, /Elapsed\s*:\s*([^\r\n]+)/,  ta)) timeText=ta[1];
+    } 
+    END {
+        if(match(timeText, /([0-9]+)\s*h[ours]*/, ha)) cost+=ha[1]*3600;
+        if(match(timeText, /([0-9]+)\s*min/, ma)) cost+=ma[1]*60;
+        if(match(timeText, /([0-9]+)\s*sec/, sa)) cost+=sa[1];
+        if(ha[1]+ma[1]+sa[1]>0) printf("%s  %s  %ds  %s  %s\n",  appId, status, cost, appName, appUrl);
+    }' ;
 }
 
 ## get one app time cost : full url or combine with environment variable YarnAppUrlHeader
