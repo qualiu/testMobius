@@ -44,6 +44,51 @@ Tips :
  application_1469835824077_0252  RunRDDMaxDeletionsByUser = 166  RunRDDLineCount = 34    RunDFMaxDeletionsByUser = 594   RunDFLineCount = 266
 ```
 
+## A Full Process example : Pull code, Build, Test on local or cluster
+### 1.Pull source and build {Mobius} 
+* Pull source code from master or git pull request, Assume `d:\msgit\revMobius` as your local Moibius direcotry.
+* Build {Mobius}
+```
+d:\msgit\revMobius>
+git checkout master
+git pull upstream master
+git pull --squash https://github.com/hebinhuang/Mobius SocketOptim
+build\Build.cmd
+
+```
+### 2.Build {testMobius}
+* Use the above Mobius code directory(`d:\msgit\revMobius`)
+* You can only build "release" 
+```
+d:\msgit\testMobius>
+csharp\update-MobiusCodeRoot-and-project-files.bat d:\msgit\revMobius
+csharp\Build.cmd release
+```
+### 3.Use {testMobius} to validate or test
+* Just run the test tool (such as `test.bat`) without parameters will show you the usage/example/instruction.
+* You can set variables like `%SparkOptions%`, `%MobiusTestArgs%` in advance, so that needless to modify the `test.bat`.
+
+#### 1.Validate on local
+* Just run test like following, if you have just build it and stay on the same cmd window (so environments kept):
+```
+d:\msgit\testMobius\csharp\txtStreamTest\test.bat d:\csv-directory
+d:\msgit\testMobius\scripts\memory\local-Riosocket-test-by-socket.bat 1
+```
+* Set environment before test, with one of following if no `%MobiusCodeRoot%` or `%SPARK_XXX%`
+ * `set MobiusCodeRoot={Mobius}`
+ * `d:\msgit\testMobius\csharp\update-MobiusCodeRoot-and-project-files.bat d:\msgit\revMobius`
+
+#### 2. Validate on cluster
+* In your local Spark client (Assume `d:\mobius\Spark0725`) , initialize environment (assume `start.bat`)
+* Set Spark submit parameters `SparkOptions` , a {testMobius} common variable used in many scripts such as `csharp\txtStreamTest\test.bat`
+```
+d:\mobius\Spark0725>
+start.bat
+set SparkOptions=--master yarn-cluster --conf spark.mobius.CSharp.socketType=Rio --num-executors 100 --executor-cores 28 --executor-memory 30G --driver-memory 32G --conf spark.python.worker.connectionTimeoutMs=3000000 --conf spark.streaming.nao.loadExistingFiles=true --conf spark.streaming.kafka.maxRetries=300 --conf spark.yarn.executor.memoryOverhead=18000 --conf spark.streaming.kafka.maxRetries=20 
+
+d:\msgit\testMobius\csharp\txtStreamTest\test.bat hdfs:///common/AdsData/MUID
+```
+
 ## Usage-Example/History-Cases 
 1. sparkclr-submit passing arguments to spark-submit
  - Issue items : (failed at submiting)
