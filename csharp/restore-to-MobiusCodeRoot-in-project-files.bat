@@ -1,5 +1,5 @@
 @SetLocal EnableDelayedExpansion
-@call %~dp0\..\tools\check-set-tool-path.bat > nul
+@call %~dp0\..\tools\set-common-dir-and-tools.bat
 @set /a replacedCount=0
 :: for /F "tokens=*" %f in ('lzmw -f "\.csproj$|^allSubmitingTest.sln$" -rp csharp -l -PAC') do @git checkout %f
 :: lzmw -rp %~dp0 -f "\.csproj$|^allSubmitingTest.sln$" -it "\w+mobius" 

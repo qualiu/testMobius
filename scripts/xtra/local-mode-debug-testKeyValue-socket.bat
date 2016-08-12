@@ -11,10 +11,7 @@ set SparkLocalOptions=--executor-cores 2 --driver-cores 2 --executor-memory 1g -
 
 set SparkClusterOptions=--master yarn-cluster --num-executors 100 --executor-cores 28 --executor-memory 30G --driver-memory 32G
 
-echo ### You can enable/disable RIO socket by add/remove : --conf spark.mobius.CSharp.socketType=Rio
 call %CommonToolDir%\bat\set-SparkOptions-by.bat %SparkOptions%
-
-echo. & echo Current SparkOptions=%SparkOptions% & echo.
 
 if "%SPARK_HOME%" == "" (
     echo Not set SPARK_HOME , treat as local mode, depends on { %%SPARK_HOME%% + %%HADOOP_HOME%% *** } or just { %%MobiusCodeRoot%% }.
@@ -43,3 +40,5 @@ popd
 
 echo ======================================================
 echo Test tool usages just run : %MobiusTestExePath%
+call %MobiusTestRoot%\scripts\log\show-local-logs-by-test-exe-dir.bat %MobiusTestExeDir%
+

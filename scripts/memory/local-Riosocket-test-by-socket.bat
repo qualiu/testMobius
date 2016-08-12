@@ -26,14 +26,16 @@ if [%5]==[] ( set "SendInterval=100" ) else ( set "SendInterval=%5" )
 rem set ElementCountInArray to accelerate memory problem if has
 set /a MessagesPerConnection=%EachTestRunSeconds% * 1000 / %SendInterval%
 if not defined MobiusTestArgs set MobiusTestArgs=-p %TestPort% -t %TestTimes% -e %ElementCountInArray% -r %EachTestRunSeconds% -w 6 -s 1 -c d:\tmp\testKVCheckDir -d 1
+call %CommonToolDir%\bat\show-MobiusVar.bat
 
 if "%~1" == "" (
     echo Usage   : %0   TestTimes [TestPort:9278]  [EachTestRunSeconds:30] [ElementCountInArray:10240] [SendInterval:100]
     echo Example : %0   5          9278             60                       20480                      100
     echo SourceLinesSocket usage : just run %SourceSocketExe%
     echo TestExe usage : just run %MobiusTestExePath%
-    echo You can set args for %MobiusTestExeName% by set MobiusTestArgs=%MobiusTestArgs% | lzmw -PA -ie "\bset\s+|MobiusTest\w+|SparkOption\w*|(cluster|local)\s*mode|([\w\.]*\.\w*mobius\w*\.[\w\.]*)"
-    echo You can set SparkOptions to avoid default. Current SparkOptions=%SparkOptions% | lzmw -PA -ie "\bset\s+|MobiusTest\w+|SparkOption\w*|(cluster|local)\s*mode|([\w\.]*\.\w*mobius\w*\.[\w\.]*)"
+    rem echo You can set args for %MobiusTestExeName% by set MobiusTestArgs=%MobiusTestArgs% | lzmw -PA -ie "\bset\s+|MobiusTest\w+|SparkOption\w*|(cluster|local)\s*mode|([\w\.]*\.\w*mobius\w*\.[\w\.]*)"
+    rem echo You can set SparkOptions to avoid default. Current SparkOptions=%SparkOptions% | lzmw -PA -ie "\bset\s+|MobiusTest\w+|SparkOption\w*|(cluster|local)\s*mode|([\w\.]*\.\w*mobius\w*\.[\w\.]*)"
+    rem call %CommonToolDir%\bat\show-TestExeVar.bat
     exit /b 5
 )
 
@@ -44,4 +46,6 @@ start cmd /c "%SourceSocketExe%" -Port %TestPort% -n %MessagesPerConnection% -s 
 call %MobiusTestRoot%\csharp\testKeyValueStream\test.bat %MobiusTestArgs% 2>&1 | lzmw -ie "\w*exception|\[(WARN|ERROR|FATAL)\]|warn\w*|spark\w*-submit|[\w\.]*\.(\w*mobius\w*)\.[\w\.]*|\w*RIO\w*" -P
 
 echo Finished test, check and kill SourceLinesSocket and TestExe.
-pskill -it "%SourceSocketExeName%.*%TestPort%|%MobiusTestExeName%.*%TestPort%"
+call pskill -it "%SourceSocketExeName%.*%TestPort%|%MobiusTestExeName%.*%TestPort%"
+call %MobiusTestRoot%\scripts\log\show-local-logs-by-test-exe-dir.bat %MobiusTestExeDir%
+

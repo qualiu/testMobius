@@ -63,6 +63,7 @@ namespace ReadWriteKafka
 
         static void Main(string[] args)
         {
+            Logger.Info(EnvironmentInfo);
             var parsedOK = false;
             var options = ArgParser.Parse<ArgReadWriteKafka>(args, out parsedOK);
             if (!parsedOK)

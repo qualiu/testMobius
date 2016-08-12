@@ -20,14 +20,17 @@ namespace kafkaStreamTest
 
         static void Main(string[] args)
         {
+            Logger.LogInfo(EnvironmentInfo);
+
             var config = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
-            Logger.LogInfo("{0} configuration {1}", File.Exists(config) ? "Exist" : "Not Exist", config);
 
             if (args.Length < 1 || args[0] == "-h" || args[0] == "--help")
             {
                 ShowUsage();
                 return;
             }
+
+            Logger.LogDebug("{0} configuration {1}", File.Exists(config) ? "Exist" : "Not Exist", config);
 
             var className = args[0];
             var type = TestClasses.Find(tp => tp.Name.Equals(className, StringComparison.OrdinalIgnoreCase));
@@ -48,8 +51,21 @@ namespace kafkaStreamTest
                 testArgs.Add("-h");
             }
 
-            var sparkContext = new Lazy<SparkContext>(() => new SparkContext(new SparkConf().SetAppName(type.Name)));
-            kafkaTest.Run(testArgs.ToArray(), sparkContext);
+            var testTimes = kafkaTest.GetTestTimes(testArgs.ToArray());
+            var allBeginTime = DateTime.Now;
+            for (var t = 1; t <= testTimes; t++)
+            {
+                SumCountStatic.GetStaticSumCount().Set();
+                var sparkContext = new Lazy<SparkContext>(() => new SparkContext(new SparkConf().SetAppName(type.Name)));
+                var beginTime = DateTime.Now;
+                Logger.LogInfo($"Begin test[{t}]-{testTimes} of {type.Name}");
+                kafkaTest.Run(sparkContext, t + 1, testTimes);
+                var usedTime = DateTime.Now - beginTime;
+                Logger.LogInfo($"End test[{t}]-{testTimes} of {type.Name}, used time = {usedTime.TotalSeconds} s = {usedTime} . SumCount : {SumCountStatic.GetStaticSumCount().ToString()} ");
+            }
+
+            var totalUsedTime = DateTime.Now - allBeginTime;
+            Logger.LogInfo($"Finished all test, test times = {testTimes}, used time = {totalUsedTime.TotalSeconds} s = {totalUsedTime}.");
         }
 
         static void ShowUsage()
@@ -62,7 +78,7 @@ namespace kafkaStreamTest
             var type = TestClasses[(int)idx];
             Console.WriteLine($"{new string('#', 20)} Example : {ExeName} {type.Name} {new string('#', 20)}");
             var kafkaTest = Activator.CreateInstance(type) as ITestKafkaBase;
-            kafkaTest.ParseArgs(new string[] { "-help" });
+            kafkaTest.GetTestTimes(new string[] { "-help" });
             Console.WriteLine(new string('#', 60));
         }
     }

@@ -35,34 +35,23 @@ namespace kafkaStreamTest
 
         [ArgDefaultValue(true), ArgDescription("show received lines text")]
         public bool ShowReceivedLines { get; set; }
-
-        [ArgShortcut("t"), ArgDescription("test times : 0 means run infinit times"), ArgDefaultValue(1)]
-        public int TestTimes { get; set; }
     }
 
     class WindowSlideTest : TestKafkaBase<WindowSlideTest, WindowSlideTestOptions>
     {
-        public override void Run(String[] args, Lazy<SparkContext> sparkContext)
+        public override void Run(Lazy<SparkContext> sparkContext, int currentTimes, int totalTimes)
         {
-            if (!ParseParameters(args))
-            {
-                return;
-            }
-
-            PrepareToRun();
+            PrepareToRun(currentTimes);
 
             var options = Options as WindowSlideTestOptions;
             var allBeginTime = DateTime.Now;
 
-            for(var k=0; options.TestTimes <=0 || k < options.TestTimes; k++) {
+            var topicList = new List<string>(options.Topics.Split(";,".ToArray()));
 
-                //if (Options.DeleteCheckPointDirectory && !string.IsNullOrWhiteSpace(Options.CheckPointDirectory))
-                //{
-                //    TestUtils.DeleteDirectory(Options.CheckPointDirectory);
-                //}
-
+            for (var k = 0; options.TestTimes <= 0 || k < options.TestTimes; k++)
+            {
                 var beginTime = DateTime.Now;
-                Logger.LogInfo("begin test[{0}]-{1}", k + 1, options.TestTimes >0 ? options.TestTimes.ToString() : "infinite");
+                Logger.LogInfo("begin test[{0}]-{1}", k + 1, options.TestTimes > 0 ? options.TestTimes.ToString() : "infinite");
                 var streamingContext = StreamingContext.GetOrCreate(options.CheckPointDirectory,
                 () =>
                 {
@@ -88,31 +77,8 @@ namespace kafkaStreamTest
 
                 streamingContext.Start();
                 WaitTerminationOrTimeout(streamingContext);
-                Logger.LogInfo("end test[{0}]-{1}, used time = {2} , sumCount : {3}", k + 1, options.TestTimes > 0 ? options.TestTimes.ToString() : "infinite", DateTime.Now - beginTime, SumCountStatic.GetStaticSumCount().ToString());
             }
 
-            Logger.LogInfo("Final sumCount : {0}, test times = {2}, used time = {2}, ", SumCountStatic.GetStaticSumCount().ToString(), options.TestTimes, DateTime.Now - allBeginTime);
-        }
-
-
-        protected List<string> topicList;
-
-        protected virtual List<string> GetTopics(WindowSlideTestOptions options)
-        {
-            return new List<string>(options.Topics.Split(";,".ToArray()));
-        }
-
-        protected virtual bool ParseParameters(String[] args)
-        {
-            if (!ParseArgs(args))
-            {
-                return false;
-            }
-
-            topicList = GetTopics(Options);
-            Logger.LogInfo($"topicList = {string.Join(", ", topicList) } ");
-
-            return true;
         }
     }
 }

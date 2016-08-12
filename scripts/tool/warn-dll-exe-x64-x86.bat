@@ -27,5 +27,6 @@ if %mpCount% EQU 0 ( echo Not found dll/exe/lib in %ToCheckDir% & exit /b 0 )
 
 rem Warn if inconsistent
 echo XXXXXX Found %mpCount% types, examples as above, inconsistent XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+echo.
 sleep 1
 exit /b 1

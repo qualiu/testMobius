@@ -17,10 +17,9 @@ namespace testKeyValueStream
 
         public static void Main(string[] args)
         {
+            Logger.LogInfo(EnvironmentInfo);
             var config = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
-            Logger.LogDebug("{0} configuration {1}", File.Exists(config) ? "Exist" : "Not Exist", config);
-            Logger.LogDebug($"sizeof(int) = {sizeof(int)}, sizeof(long) = {sizeof(long)}, OSVersion = {Environment.OSVersion}, MachineName = {Environment.MachineName}"
-                + $", Is64BitOperatingSystem = {Environment.Is64BitOperatingSystem}, Is64BitProcess = {Environment.Is64BitProcess}");
+
             var isParseOK = false;
             //Options = ParserByCommandLine.Parse(args, out isParseOK);
             Options = ArgParser.Parse<ArgOptions>(args, out isParseOK, "-Help");
@@ -29,6 +28,8 @@ namespace testKeyValueStream
             {
                 return;
             }
+
+            Logger.LogDebug("{0} configuration {1}", File.Exists(config) ? "Exist" : "Not Exist", config);
 
             if (Options.WaitSecondsForAttachDebug > 0)
             {

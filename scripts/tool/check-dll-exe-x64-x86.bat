@@ -11,7 +11,7 @@ if "%~1" == "" (
 
 set CheckPath=%1
 
-rem call %~dp0..\..\tools\check-set-tool-path.bat
+rem call %~dp0..\..\tools\set-common-dir-and-tools.bat
 set PATH=%PATH%;%~dp0..\..\tools
 where dumpbin 2>nul >nul
 if %ERRORLEVEL% GTR 0 (

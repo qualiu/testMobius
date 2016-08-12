@@ -5,7 +5,7 @@ if %ShellDir:~-1%==\ set ShellDir=%ShellDir:~0,-1%
 set CommonToolDir=%ShellDir%\..\..\tools
 set MobiusTestExePath=%ShellDir%\textStreamTest.py
 
-call %CommonToolDir%\check-set-tool-path.bat
+call %CommonToolDir%\set-common-dir-and-tools.bat
 call %CommonToolDir%\bat\find-MobiusTestExePath-in.bat %ShellDir%
 
 set SparkLocalOptions=--num-executors 8 --executor-cores 4 --executor-memory 8G --driver-memory 10G --conf spark.yarn.executor.memoryOverhead=18000
@@ -13,7 +13,6 @@ set SparkLocalOptions=--num-executors 8 --executor-cores 4 --executor-memory 8G 
 set SparkClusterOptions=--master yarn-cluster --num-executors 100 --executor-cores 28 --executor-memory 30G --driver-memory 32G --conf spark.python.worker.connectionTimeoutMs=3000000 --conf spark.streaming.kafka.maxRetries=300 --conf spark.yarn.executor.memoryOverhead=18000 --conf spark.streaming.kafka.maxRetries=20 --conf spark.yarn.appMasterEnv.PYSPARK_PYTHON=d:/data/anaconda2/python.exe
 
 call %CommonToolDir%\bat\set-SparkOptions-by.bat %SparkOptions%
-echo. & echo Current SparkOptions=%SparkOptions% & echo.
 
 if "%SPARK_HOME%" == "" (
     echo Not set SPARK_HOME , treat as local mode
@@ -34,3 +33,4 @@ if "%~1" == "" (
 
 echo %SPARK_HOME%\bin\spark-submit.cmd %SparkOptions% %MobiusTestExePath% %AllArgs%
 call %SPARK_HOME%\bin\spark-submit.cmd %SparkOptions% %MobiusTestExePath% %AllArgs%
+

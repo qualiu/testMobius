@@ -18,19 +18,19 @@ function get_one_time_cost() {
     appUrl=$1
     ## echo appUrl=$1 && return ## for debug
     curl "$appUrl" 2>/dev/null | lzmw -it "<.*?>" -o " " -a -PAC | lzmw -S -it ":\s*[\r\n]+\s*" -o ":" -PAC \
-     | lzmw -it "application|Name\s*:|status|elapse" -PAC \
-     | awk -v appUrl="$appUrl" 'BEGIN{IGNORECASE=1; cost=0; timeText=""; appId=""; appName=""; status=""; } 
+        | lzmw -it "application|Name\s*:|(yarn|application).*state|elapse" -PAC \
+     | awk -v appUrl="$appUrl" 'BEGIN{IGNORECASE=1; cost=0; timeText=""; appId=""; appName=""; state=""; } 
     { 
         if(match($0, /Application\s+(application\w+)/, ta)) appId=ta[1];
         if(match($0, /Name\s*:\s*(\S+)/, ta)) appName=ta[1];
-        if(match($0, /Status[^:]*:\s*(\w+)/, ta)) status=ta[1];
+        if(match($0, /State[^:]*:\s*(\w+)/, ta)) state=ta[1];
         if(match($0, /Elapsed\s*:\s*([^\r\n]+)/,  ta)) timeText=ta[1];
     } 
     END {
         if(match(timeText, /([0-9]+)\s*h[ours]*/, ha)) cost+=ha[1]*3600;
         if(match(timeText, /([0-9]+)\s*min/, ma)) cost+=ma[1]*60;
         if(match(timeText, /([0-9]+)\s*sec/, sa)) cost+=sa[1];
-        if(ha[1]+ma[1]+sa[1]>0) printf("%s  %s  %ds  %s  %s\n",  appId, status, cost, appName, appUrl);
+        if(ha[1]+ma[1]+sa[1]>0) printf("%s  %s  %ds  %s  %s\n",  appId, state, cost, appName, appUrl);
     }' ;
 }
 

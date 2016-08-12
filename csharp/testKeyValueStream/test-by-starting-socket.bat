@@ -50,7 +50,7 @@ popd
 echo ======================================================
 echo More source socket usages just run : %SourceSocketExe%
 echo Test tool usages just run : %MobiusTestExePath%
-
+call %MobiusTestRoot%\scripts\log\show-local-logs-by-test-exe-dir.bat %MobiusTestExeDir%
 exit /b 0
 
 :ExtractArgs

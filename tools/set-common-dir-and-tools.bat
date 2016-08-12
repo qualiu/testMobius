@@ -24,4 +24,4 @@ if not exist %MobiusTestDataDir% md %MobiusTestDataDir%
 if not exist %MobiusTestLogDir% md %MobiusTestLogDir%
 
 for /F "tokens=*" %%d in (' dir /A:D /B %MobiusTestSoftwareDir%\kafka* 2^>nul ') do set MobiusTestKafkaDir=%MobiusTestSoftwareDir%\%%d
-call %CommonToolDir%\check-set-tool-path.bat
+call %CommonToolDir%\check-set-tool-path.bat >nul 2>nul

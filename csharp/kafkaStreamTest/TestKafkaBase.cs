@@ -17,15 +17,21 @@ namespace kafkaStreamTest
 {
     public interface ITestKafkaBase
     {
-        bool ParseArgs(string[] args);
-        void Run(String[] args, Lazy<SparkContext> sparkContext);
+        /// <summary>
+        /// Parse test times from arguments.
+        /// </summary>
+        /// <param name="args">command line arguments</param>
+        /// <returns>if failed to parse return -1 to not run test.</returns>
+        int GetTestTimes(string[] args);
+
+        void Run(Lazy<SparkContext> sparkContext, int currentTimes, int totalTimes);
     }
 
     [Serializable]
     public abstract class TestKafkaBase<ClassName, ArgClass> : BaseTestUtilLog<ClassName>, ITestKafkaBase
         where ArgClass : class, new()
     {
-        protected DateTime beginTime = DateTime.UtcNow;
+        public abstract void Run(Lazy<SparkContext> sparkContext, int currentTimes, int totalTimes);
 
         protected dynamic Options;
 
@@ -33,9 +39,9 @@ namespace kafkaStreamTest
 
         protected Dictionary<string, long> offsetsRange;
 
-        public abstract void Run(String[] args, Lazy<SparkContext> sparkContext);
+        protected int runTimes = 1;
 
-        public virtual bool ParseArgs(string[] args)
+        public virtual int GetTestTimes(string[] args)
         {
             var parsedOK = false;
             Options = ArgParser.Parse<ArgClass>(args, out parsedOK);
@@ -50,10 +56,10 @@ namespace kafkaStreamTest
                 Thread.Sleep(Options.WaitSecondsForAttachDebug * 1000);
             }
 
-            return parsedOK;
+            return parsedOK ? Options.TestTimes : -1;
         }
 
-        protected void PrepareToRun()
+        protected void PrepareToRun(int currentTimes)
         {
             kafkaParams = GetKafkaParameters(Options);
             Logger.LogInfo($"kafkaParams[{kafkaParams.Count}] = {string.Join(", ", kafkaParams.Select(kv => $"{kv.Key} = {kv.Value}")) } ");
@@ -61,8 +67,7 @@ namespace kafkaStreamTest
             offsetsRange = GetOffsetRanges(Options);
             Logger.LogInfo($"offsetsRange[{offsetsRange.Count}] = {string.Join(", ", offsetsRange.Select(kv => $"{kv.Key} = {kv.Value}")) } ");
 
-            beginTime = DateTime.UtcNow;
-            if (Options.DeleteCheckPointDirectory && !string.IsNullOrWhiteSpace(Options.CheckPointDirectory))
+            if (currentTimes == 1 && Options.DeleteCheckPointDirectory && !string.IsNullOrWhiteSpace(Options.CheckPointDirectory))
             {
                 TestUtils.DeleteDirectory(Options.CheckPointDirectory);
             }
@@ -128,8 +133,6 @@ namespace kafkaStreamTest
             {
                 streamingContext.AwaitTermination();
             }
-
-            Logger.LogInfo($"Finished {typeof(ClassName).Name}, used time = {DateTime.UtcNow - beginTime}");
         }
     }
 }

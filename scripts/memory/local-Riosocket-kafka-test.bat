@@ -12,7 +12,9 @@ call %CommonToolDir%\bat\check-exist-path.bat %MobiusTestExePath% MobiusTestExeP
 call %MobiusTestRoot%\scripts\tool\warn-dll-exe-x64-x86.bat %MobiusTestExeDir% 
 
 call %CommonToolDir%\bat\find-jars-in-dir-to-var %MobiusCodeRoot%\build\dependencies JarOption
-if not "%JarOption%" == "" ( set "JarOption=--jars %JarOption%" ) else ( echo ###### Not found jars in %%MobiusCodeRoot%%\build\dependencies : %MobiusCodeRoot%\build\dependencies , you can set JarOption or in SparkOptions & sleep 1 )
+if not "%JarOption%" == "" ( set "JarOption=--jars %JarOption%" ) else ( 
+    echo ###### Not found jars in %%MobiusCodeRoot%%\build\dependencies : %MobiusCodeRoot%\build\dependencies , check %%MobiusCodeRoot%% or set JarOption or in SparkOptions | lzmw -PA -it "(.*)"
+)
 
 if not defined SparkOptions set SparkOptions=--executor-cores 2 --driver-cores 2 --executor-memory 1g --driver-memory 1g %JarOption% --conf spark.mobius.CSharp.socketType=Rio 
 
@@ -23,10 +25,12 @@ if [%4]==[] ( set "ElementCountInArray=10240" ) else ( set "ElementCountInArray=
 if [%5]==[] ( set "SendInterval=100" ) else ( set "SendInterval=%5" )
 
 if not defined MobiusTestArgs set MobiusTestArgs=WindowSlideTest -Topics %TopicName% -t %TestTimes% -e %ElementCountInArray% -r %EachTestRunSeconds% -w 6 -s 1 -c d:\tmp\testKafkaKVCheckDir -d 1
+call %CommonToolDir%\bat\show-MobiusVar.bat
 
 if "%~1" == "" (
     echo Usage   : %0   TestTimes [TopicName]  [EachTestRunSeconds:30] [ElementCountInArray:10240] [SendInterval:100]
     echo Example : %0   5          test             60                       20480                      100
+    echo.
     echo TestExe usage : just run %MobiusTestExePath%
     echo You can set args for %MobiusTestExeName% by set MobiusTestArgs=%MobiusTestArgs% | lzmw -PA -ie "\bset\s+|MobiusTest\w+|SparkOption\w*|(cluster|local)\s*mode|([\w\.]*\.\w*mobius\w*\.[\w\.]*)"
     echo You can set SparkOptions to avoid default. Current SparkOptions=%SparkOptions% | lzmw -PA -ie "\bset\s+|MobiusTest\w+|SparkOption\w*|(cluster|local)\s*mode|([\w\.]*\.\w*mobius\w*\.[\w\.]*)"
@@ -46,3 +50,5 @@ if %KafkaServerCount% LSS 1 (
 
 call %MobiusTestRoot%\csharp\kafkaStreamTest\test.bat %MobiusTestArgs% 2>&1 | lzmw -ie "\w*exception|\[(WARN|ERROR|FATAL)\]|warn\w*|spark\w*-submit|[\w\.]*\.(\w*mobius\w*)\.[\w\.]*|\w*RIO\w*" -P
 rem pskill -it "%MobiusTestExeName%.*%TopicName%"
+call %MobiusTestRoot%\scripts\log\show-local-logs-by-test-exe-dir.bat %MobiusTestExeDir%
+

@@ -22,6 +22,10 @@ namespace testArgsQuotes
 
         static void Main(string[] args)
         {
+            Console.WriteLine("sizeof(int) = " + sizeof(int) + ", sizeof(long) = " + sizeof(long)
+                + ", Is64BitOperatingSystem = " + Environment.Is64BitOperatingSystem + ", Is64BitProcess = " + Environment.Is64BitProcess
+                + ", OSVersion = " + Environment.OSVersion + ", MachineName = " + Environment.MachineName);
+
             var exe = Path.GetFileName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase);
             if (args.Length < 1 || args[0] == "-h" || args[0] == "--help")
             {

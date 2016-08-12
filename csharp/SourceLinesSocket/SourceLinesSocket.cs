@@ -29,6 +29,8 @@ namespace SourceLinesSocket
 
         static void Main(string[] args)
         {
+            Logger.Info(EnvironmentInfo);
+
             var parsedOK = false;
             //var options = ParserByCommandLine.Parse(args, out parseOK);
             //var options = ParserByFluent.Parse(args, out parseOK);

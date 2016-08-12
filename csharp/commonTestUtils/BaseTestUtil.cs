@@ -44,6 +44,15 @@ namespace CommonTestUtils
         }
 
         public static String ExeName { get { return Path.GetFileName(ExePath); } }
+
+        public static string EnvironmentInfo
+        {
+            get
+            {
+                return $"sizeof(int) = {sizeof(int)}, sizeof(long) = {sizeof(long)}, Is64BitOperatingSystem = {Environment.Is64BitOperatingSystem}"
+                    + $", Is64BitProcess = {Environment.Is64BitProcess}, OSVersion = {Environment.OSVersion}, MachineName = {Environment.MachineName}";
+            }
+        }
     }
 
     [Serializable]

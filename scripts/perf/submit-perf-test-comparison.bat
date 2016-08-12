@@ -5,7 +5,7 @@ SetLocal EnableDelayedExpansion
 set ShellDir=%~dp0
 if %ShellDir:~-1%==\ set ShellDir=%ShellDir:~0,-1%
 set CommonToolDir=%ShellDir%\..\..\tools
-rem call %CommonToolDir%\check-set-tool-path.bat
+rem call %CommonToolDir%\set-common-dir-and-tools.bat
 for /F "tokens=*" %%a in (' hostname ') do set hostname=%%a
 
 if "%~1" == "" (

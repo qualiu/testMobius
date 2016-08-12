@@ -31,15 +31,8 @@ namespace kafkaStreamTest
     [Serializable]
     class UnionTopicTest : TestKafkaBase<UnionTopicTest, UnionTopicTestOptions>
     {
-        public override void Run(String[] args, Lazy<SparkContext> sparkContext)
+        public override void Run(Lazy<SparkContext> sparkContext, int currentTimes, int totalTimes)
         {
-            if (!ParseArgs(args))
-            {
-                return;
-            }
-
-            PrepareToRun();
-
             var options = Options as UnionTopicTestOptions;
 
             var streamingContext = StreamingContext.GetOrCreate(options.CheckPointDirectory,
@@ -54,9 +47,7 @@ namespace kafkaStreamTest
                     var stream2 = KafkaUtils.CreateDirectStream(ssc, new List<string> { options.Topic2 }, kafkaParams, offsetsRange)
                         .Map(line => new RowIdCountTime().Deserialize(line.Value));
                     var stream = stream1.Union(stream2);
-                    //var count = stream.Count();
-                    //Logger.LogInfo("Will print count : ");
-                    //count.Print(options.PrintCount);
+
                     if (options.RePartition > 0)
                     {
                         stream = stream.Repartition(options.RePartition);
@@ -77,12 +68,6 @@ namespace kafkaStreamTest
             streamingContext.Start();
 
             WaitTerminationOrTimeout(streamingContext);
-        }
-
-        [Serializable]
-        class UidCountStreamHelper
-        {
-
         }
     }
 }

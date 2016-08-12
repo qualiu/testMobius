@@ -6,11 +6,15 @@
 )
 
 @set MobiusCodeRoot=%1
-@if %MobiusCodeRoot:~-1%==\ set MobiusCodeRoot=%MobiusCodeRoot:~0,-1%
+@call %~dp0\..\tools\set-common-dir-and-tools.bat
+@call %CommonToolDir%\bat\check-exist-path.bat %MobiusCodeRoot% MobiusCodeRoot || exit /b 1
+@pushd %MobiusCodeRoot%
+@set MobiusCodeRoot=%CD%
+@popd
 
 @SetLocal EnableDelayedExpansion
 @set MobiusCodeRootReplace=%MobiusCodeRoot:\=\\%
-@call %~dp0\..\tools\check-set-tool-path.bat >nul
+
 
 @set /a replacedCount=0
 

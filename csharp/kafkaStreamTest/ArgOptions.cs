@@ -63,6 +63,9 @@ namespace kafkaStreamTest
         [ArgDefaultValue(0), ArgDescription("Wait seconds for user to attach this process and debug.")]
         public int WaitSecondsForAttachDebug { get; set; }
 
+        [ArgShortcut("t"), ArgDescription("Test times"), ArgDefaultValue(1)]
+        public int TestTimes { get; set; }
+
         #endregion
 
         [HelpHook, ArgDescription("Shows this help"), ArgShortcut("-h")]
