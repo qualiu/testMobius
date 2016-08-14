@@ -154,7 +154,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>lzTest.siphon.App</mainClass>
+                            <!--<mainClass></mainClass>-->
                         </manifest>
                     </archive>
                 </configuration>

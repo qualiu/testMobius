@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 using log4net;
 using Microsoft.Spark.CSharp.Services;
@@ -50,8 +51,25 @@ namespace CommonTestUtils
             get
             {
                 return $"sizeof(int) = {sizeof(int)}, sizeof(long) = {sizeof(long)}, Is64BitOperatingSystem = {Environment.Is64BitOperatingSystem}"
-                    + $", Is64BitProcess = {Environment.Is64BitProcess}, OSVersion = {Environment.OSVersion}, MachineName = {Environment.MachineName}";
+                    + $", Is64BitProcess = {Environment.Is64BitProcess}, OSVersion = {Environment.OSVersion}, MachineName = {Environment.MachineName}"
+                    + $", Processors = {Environment.ProcessorCount}"
+                    + $", CPU usage = {SystemInfo.GetCPUUsage()}, Available Memory = {SystemInfo.GetAvailableRAM()}"
+                    ;
             }
+        }
+
+        public static string GetCurrentProcessInfo(bool withUsedTimeInfo = true)
+        {
+            var process = Process.GetCurrentProcess();
+            var info = new StringBuilder($"Current Process : ");
+            info.Append($"Id = {process.Id}, PrivateMemorySize64 = {process.PrivateMemorySize64}, VirtualMemorySize64 = {process.VirtualMemorySize64}");
+            if (withUsedTimeInfo)
+            {
+                info.Append($", TotalProcessorTime = {process.TotalProcessorTime}, UserProcessorTime = {process.UserProcessorTime}");
+                info.Append($", PagedMemorySize64 = {process.PagedMemorySize64}, NonpagedSystemMemorySize64 = {process.NonpagedSystemMemorySize64}");
+                info.Append($", PeakPagedMemorySize64 = {process.PeakPagedMemorySize64}, PeakVirtualMemorySize64 = {process.PeakVirtualMemorySize64}");
+            }
+            return info.ToString();
         }
     }
 

@@ -7,19 +7,11 @@ call %CommonToolDir%\set-common-dir-and-tools.bat
 call %CommonToolDir%\bat\find-MobiusTestExePath-in.bat %ShellDir%
 call %CommonToolDir%\bat\check-exist-path.bat %MobiusTestExePath% MobiusTestExePath || exit /b 1
 
-set SparkLocalOptions=--executor-cores 2 --driver-cores 2 --executor-memory 1g --driver-memory 1g
+set SparkLocalOptions=--executor-cores 8 --driver-cores 8 --executor-memory 2G --driver-memory 2G
 
 set SparkClusterOptions=--master yarn-cluster --num-executors 100 --executor-cores 28 --executor-memory 30G --driver-memory 32G
 
 call %CommonToolDir%\bat\set-SparkOptions-by.bat %SparkOptions%
-
-if "%SPARK_HOME%" == "" (
-    echo Not set SPARK_HOME , treat as local mode, depends on { %%SPARK_HOME%% + %%HADOOP_HOME%% *** } or just { %%MobiusCodeRoot%% }.
-    rem call %CommonToolDir%\bat\check-exist-path.bat "%MobiusCodeRoot%" MobiusCodeRoot || exit /b 1
-    call %CommonToolDir%\set-local-sparkCLR-env.bat %MobiusCodeRoot% || exit /b 1
-)
-
-call %CommonToolDir%\bat\check-exist-path.bat %SPARKCLR_HOME%\scripts\sparkclr-submit.cmd || exit /b 1
 
 set AllArgs=%*
 if "%~1" == "" (
@@ -30,11 +22,17 @@ if "%~1" == "" (
     exit /b 5
 )
 
+if "%SPARK_HOME%" == "" (
+    call %CommonToolDir%\bat\check-exist-path.bat %MobiusCodeRoot% MobiusCodeRoot || exit /b 1
+    call %CommonToolDir%\set-local-sparkCLR-env.bat %MobiusCodeRoot% || exit /b 1
+)
+
+call %CommonToolDir%\bat\check-exist-path.bat %SPARKCLR_HOME%\scripts\sparkclr-submit.cmd || exit /b 1
+
 pushd %MobiusTestExeDir%
 echo %SPARKCLR_HOME%\scripts\sparkclr-submit.cmd %SparkOptions% --exe %MobiusTestExeName% %CD% %AllArgs%
 call %SPARKCLR_HOME%\scripts\sparkclr-submit.cmd %SparkOptions% --exe %MobiusTestExeName% %CD% %AllArgs%
 popd
-
 
 echo ======================================================
 echo Test tool usages just run : %MobiusTestExePath%

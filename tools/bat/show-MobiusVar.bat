@@ -9,7 +9,7 @@ if defined SparkLocalOptions (
     echo ### Local Mode : set SparkOptions=%SparkLocalOptions% | lzmw -PA -ie "\bset\s+|MobiusTest\w+|SparkOption\w*|(cluster|local)\s*mode|([\w\.]*\.\w*mobius\w*\.[\w\.]*)"
     echo.
 )
-echo ### You can set spark.app.name to avoid default or add MobiusTestAppHead/MobiusTestAppTail. Current: spark.app.name=%spark.app.name%  ; appNameOption=%appNameOption% ; MobiusTestAppHead=%MobiusTestAppHead% ; MobiusTestAppTail=%MobiusTestAppTail%
+echo ### You can set spark.app.name to avoid default or add MobiusTestAppHead / MobiusTestAppTail. Current: spark.app.name=%spark.app.name%  ; appNameOption=%appNameOption% ; MobiusTestAppHead=%MobiusTestAppHead% ; MobiusTestAppTail=%MobiusTestAppTail%
 call %~dp0\show-TestExeVar.bat
 if "%SPARK_HOME%" == ""  (
     if "%MobiusCodeRoot%" == "" (

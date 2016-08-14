@@ -13,7 +13,7 @@ if not "%JarOption%" == "" ( set "JarOption=--jars %JarOption%" ) else (
     echo ###### Not found jars in %%MobiusCodeRoot%%\build\dependencies : %MobiusCodeRoot%\build\dependencies , check %%MobiusCodeRoot%% or set JarOption or in SparkOptions | lzmw -PA -it "(.*)"
 )
 
-set SparkLocalOptions=--executor-cores 2 --driver-cores 2 --executor-memory 2g --driver-memory 2g %JarOption%
+set SparkLocalOptions=--executor-cores 8 --driver-cores 8 --executor-memory 2G --driver-memory 2G %JarOption%
 
 set SparkClusterOptions=--master yarn-cluster --num-executors 100 --executor-cores 28 --executor-memory 30G --driver-memory 32G 
 
@@ -31,7 +31,7 @@ if "%~1" == "" (
 
 if "%SPARK_HOME%" == "" (
     echo Not set SPARK_HOME , treat as local mode, depends on { %%SPARK_HOME%% + %%HADOOP_HOME%% *** } or just { %%MobiusCodeRoot%% }.
-    rem call %CommonToolDir%\bat\check-exist-path.bat "%MobiusCodeRoot%" MobiusCodeRoot || exit /b 1
+    call %CommonToolDir%\bat\check-exist-path.bat %MobiusCodeRoot% MobiusCodeRoot || exit /b 1
     call %CommonToolDir%\set-local-sparkCLR-env.bat %MobiusCodeRoot% || exit /b 1
 )
 

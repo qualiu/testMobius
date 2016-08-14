@@ -157,7 +157,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>lzTest.siphon.App</mainClass>
+                            <mainClass>lzTest.KafkaStreamTest</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -230,7 +230,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>lzTest.siphon.App</mainClass>
+                            <mainClass>lzTest.KafkaStreamTest</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

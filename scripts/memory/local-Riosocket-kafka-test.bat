@@ -16,7 +16,7 @@ if not "%JarOption%" == "" ( set "JarOption=--jars %JarOption%" ) else (
     echo ###### Not found jars in %%MobiusCodeRoot%%\build\dependencies : %MobiusCodeRoot%\build\dependencies , check %%MobiusCodeRoot%% or set JarOption or in SparkOptions | lzmw -PA -it "(.*)"
 )
 
-if not defined SparkOptions set SparkOptions=--executor-cores 2 --driver-cores 2 --executor-memory 1g --driver-memory 1g %JarOption% --conf spark.mobius.CSharp.socketType=Rio 
+if not defined SparkOptions set SparkOptions=--executor-cores 8 --driver-cores 8 --executor-memory 2G --driver-memory 2G %JarOption% --conf spark.mobius.CSharp.socketType=Rio 
 
 if [%1]==[] ( set "TestTimes=1" ) else ( set "TestTimes=%1" )
 if [%2]==[] ( set "TopicName=test" ) else ( set "TopicName=%2" )
@@ -49,6 +49,6 @@ if %KafkaServerCount% LSS 1 (
 )
 
 call %MobiusTestRoot%\csharp\kafkaStreamTest\test.bat %MobiusTestArgs% 2>&1 | lzmw -ie "\w*exception|\[(WARN|ERROR|FATAL)\]|warn\w*|spark\w*-submit|[\w\.]*\.(\w*mobius\w*)\.[\w\.]*|\w*RIO\w*" -P
-rem pskill -it "%MobiusTestExeName%.*%TopicName%"
+rem pskill -it "%MobiusTestExeName%.*%TopicName%" 2>nul
 call %MobiusTestRoot%\scripts\log\show-local-logs-by-test-exe-dir.bat %MobiusTestExeDir%
 

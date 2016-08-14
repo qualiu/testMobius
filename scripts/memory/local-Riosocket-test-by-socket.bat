@@ -15,7 +15,7 @@ for /f %%g in (' for /R %SocketCodeDir% %%f in ^(*.exe^) do @echo %%f ^| findstr
 call %CommonToolDir%\bat\check-exist-path.bat %SourceSocketExe% SourceSocketExe || exit /b 1
 for %%a in ( %SourceSocketExe% ) do set "SourceSocketExeName=%%~nxa"
 
-if not defined SparkOptions set SparkOptions=--executor-cores 2 --driver-cores 2 --executor-memory 1g --driver-memory 1g --conf spark.mobius.CSharp.socketType=Rio
+if not defined SparkOptions set SparkOptions=--executor-cores 8 --driver-cores 8 --executor-memory 2G --driver-memory 2G --conf spark.mobius.CSharp.socketType=Rio
 
 if [%1]==[] ( set "TestTimes=1" ) else ( set "TestTimes=%1" )
 if [%2]==[] ( set "TestPort=9278" ) else ( set "TestPort=%2" )
@@ -40,12 +40,12 @@ if "%~1" == "" (
 )
 
 echo Check and stop existed same port socket by pattern "%SourceSocketExeName%.*%TestPort%"
-call pskill -it "%SourceSocketExeName%.*%TestPort%"
+call pskill -it "%SourceSocketExeName%.*%TestPort%" 2>nul
 start cmd /c "%SourceSocketExe%" -Port %TestPort% -n %MessagesPerConnection% -s %SendInterval% -RunningSeconds 0 -QuitIfExceededAny 0 -PauseSecondsAtDrop 9 
 
 call %MobiusTestRoot%\csharp\testKeyValueStream\test.bat %MobiusTestArgs% 2>&1 | lzmw -ie "\w*exception|\[(WARN|ERROR|FATAL)\]|warn\w*|spark\w*-submit|[\w\.]*\.(\w*mobius\w*)\.[\w\.]*|\w*RIO\w*" -P
 
 echo Finished test, check and kill SourceLinesSocket and TestExe.
-call pskill -it "%SourceSocketExeName%.*%TestPort%|%MobiusTestExeName%.*%TestPort%"
+call pskill -it "%SourceSocketExeName%.*%TestPort%|%MobiusTestExeName%.*%TestPort%" 2>nul
 call %MobiusTestRoot%\scripts\log\show-local-logs-by-test-exe-dir.bat %MobiusTestExeDir%
 

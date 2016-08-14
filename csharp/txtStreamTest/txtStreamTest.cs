@@ -47,12 +47,14 @@ namespace TxtStreamTest
             }
 
             var beginTime = DateTime.Now;
-            for(var k=0; k < testTimes; k++)
+            for(var k=1; k <= testTimes; k++)
             {
-                StartOneTest(pathPattern, k+1, testTimes);
+                StartOneTest(pathPattern, k, testTimes);
+                Logger.LogInfo($"End of test[{k}]-{testTimes} : {GetCurrentProcessInfo()}");
             }
 
-            Logger.LogInfo($"Finished all tests, testTimes = {testTimes}, used time = {(DateTime.Now - beginTime).Seconds} s = {DateTime.Now - beginTime}, read data = {pathPattern}");
+            Logger.LogInfo($"Finished all tests, testTimes = {testTimes}, used time = {(DateTime.Now - beginTime).Seconds} s = {DateTime.Now - beginTime}, read data = {pathPattern}.");
+            Logger.LogInfo($"Final process info : {GetCurrentProcessInfo()}");
         }
 
         static void StartOneTest(string pathPattern, int times, int totalTimes)

@@ -7,7 +7,7 @@ call %CommonToolDir%\set-common-dir-and-tools.bat
 call %CommonToolDir%\bat\find-MobiusTestExePath-in.bat %MobiusTestRoot%\csharp\testKeyValueStream
 call %CommonToolDir%\bat\check-exist-path.bat %MobiusTestExePath% MobiusTestExePath || exit /b 1
 
-set SparkLocalOptions=--executor-cores 2 --driver-cores 2 --executor-memory 1g --driver-memory 1g
+set SparkLocalOptions=--executor-cores 8 --driver-cores 8 --executor-memory 2G --driver-memory 2G
 
 set SparkClusterOptions=--master yarn-cluster --num-executors 100 --executor-cores 28 --executor-memory 30G --driver-memory 32G
 

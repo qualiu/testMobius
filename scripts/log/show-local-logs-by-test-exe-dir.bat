@@ -1,6 +1,6 @@
 @echo off
 SetLocal EnableDelayedExpansion
-
+(echo ##%SparkOptions% | lzmw -it "--master\s+\w+|--deploy\S*mode\s+\S*cluster" --nt "--master\s+\S*(localhost|127\.0\.0\.1)" -PAC ) || exit /b 0
 if "%~1" == "" (
     echo Usage :   %0  [exe-directory-has-.exe.config                       [show-log-path-option of lzmw : -T 3 , like -H 3 -T 3 ]
     echo Example : %0 d:\msgit\testMobius\csharp\kafkaStreamTest\bin\Debug

@@ -61,11 +61,13 @@ namespace kafkaStreamTest
                 Logger.LogInfo($"Begin test[{t}]-{testTimes} of {type.Name}");
                 kafkaTest.Run(sparkContext, t + 1, testTimes);
                 var usedTime = DateTime.Now - beginTime;
-                Logger.LogInfo($"End test[{t}]-{testTimes} of {type.Name}, used time = {usedTime.TotalSeconds} s = {usedTime} . SumCount : {SumCountStatic.GetStaticSumCount().ToString()} ");
+                Logger.LogInfo($"End test[{t}]-{testTimes} of {type.Name}, used time = {usedTime.TotalSeconds} s = {usedTime} . SumCount : {SumCountStatic.GetStaticSumCount().ToString()}.");
+                Logger.LogInfo($"End test[{t}]-{testTimes} of {type.Name} : {GetCurrentProcessInfo()}");
             }
 
             var totalUsedTime = DateTime.Now - allBeginTime;
-            Logger.LogInfo($"Finished all test, test times = {testTimes}, used time = {totalUsedTime.TotalSeconds} s = {totalUsedTime}.");
+            Logger.LogInfo($"Finished all test of {type.Name}, test times = {testTimes}, used time = {totalUsedTime.TotalSeconds} s = {totalUsedTime}.");
+            Logger.LogInfo($"Final process info of {type.Name} : {GetCurrentProcessInfo()}");
         }
 
         static void ShowUsage()

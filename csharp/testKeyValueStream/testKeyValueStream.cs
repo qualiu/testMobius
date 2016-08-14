@@ -81,6 +81,7 @@ namespace testKeyValueStream
                 Logger.LogInfo("============= End of {0}, start from {1} , used {2} s. total cost {3} s. Reduced final sumCount : {4} {5}",
                     timesInfo, startTime.ToString(TestUtils.MilliTimeFormat), (DateTime.Now - startTime).TotalSeconds,
                     (DateTime.Now - beginTime).TotalSeconds, sum.ToString(), message);
+                Logger.LogInfo($"End of {testTime} : {GetCurrentProcessInfo()}");
             };
 
             for (var times = 0; times < Options.TestTimes; times++)
@@ -89,6 +90,7 @@ namespace testKeyValueStream
             }
 
             Logger.LogInfo("finished all test , total test times = " + Options.TestTimes + ", used time = " + (DateTime.Now - beginTime));
+            Logger.LogInfo($"Final process info : {GetCurrentProcessInfo()}");
         }
 
         static void StartOneTest(SparkContext sc, DStream<string> lines, long elements, string prefix, string suffix = ".txt")

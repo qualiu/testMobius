@@ -1,25 +1,29 @@
 @echo off
-@SetLocal EnableDelayedExpansion
+rem local mode test
+SetLocal EnableDelayedExpansion
 
 set ShellDir=%~dp0
 if %ShellDir:~-1%==\ set ShellDir=%ShellDir:~0,-1%
-
 set CommonToolDir=%ShellDir%\..\..\tools
+call %CommonToolDir%\set-common-dir-and-tools.bat
 
 set SocketCodeDir=%ShellDir%\..\..\csharp\SourceLinesSocket
 for /f %%g in (' for /R %SocketCodeDir%  %%f in ^(*.exe^) do @echo %%f ^| findstr /I /C:vshost /V ^| findstr /I /C:obj /V ') do set SourceSocketExe=%%g
 
-set lzJar=%ShellDir%\target\KeyValueArrayTestOneJar.jar
-if not exist %lzJar% (
+set MobiusTestJarPath=%ShellDir%\target\KeyValueArrayTestOneJar.jar
+if not exist %MobiusTestJarPath% (
     pushd %ShellDir% && call mvn package & popd
 )
 
-call %CommonToolDir%\bat\check-exist-path.bat %lzJar% || exit /b 1
+call %CommonToolDir%\bat\find-MobiusTestJarPath-in.bat %MobiusTestJarPath%
+call %CommonToolDir%\bat\check-exist-path.bat %MobiusTestJarPath% || exit /b 1
+if not defined SparkOptions set SparkOptions=--executor-cores 8 --driver-cores 8 --executor-memory 2G --driver-memory 2G
+call %CommonToolDir%\bat\set-SparkOptions-by.bat %SparkOptions%
 
 set AllArgs=%*
 if "%~1" == "" (
     echo No parameter, Usage as following:
-    java -jar %lzJar%
+    java -jar %MobiusTestJarPath%
     echo Example parameter : -p 9486 -r 30 -b 1 -w 3 -s 3 -v 50 -c d:\tmp\checkDir -d
     echo Parameters like host, port and validation are according to source socket tool : %SourceSocketExe%
     echo Source socket directory : %SocketCodeDir%
@@ -40,11 +44,14 @@ call :ExtractArgs %*
 rem use cmd /k if you want to keep the window
 start cmd /c "%SourceSocketExe%" -p %Port% -n %ValidationLines%
 
-call %SPARK_HOME%\bin\spark-submit.cmd --class lzTest.KeyValueArrayTest %lzJar% %AllArgs%
+call %SPARK_HOME%\bin\spark-submit.cmd --class lzTest.KeyValueArrayTest %MobiusTestJarPath% %AllArgs%
+
+for %%a in ( %SourceSocketExe% ) do set "SourceSocketExeName=%%~nxa"
+call pskill -it "%SourceSocketExeName%.*%Port%|%MobiusTestJarName%.*%Port%" 2>nul 2>nul
 
 echo ======================================================
 echo More source socket usages just run : %SourceSocketExe%
-echo Test tool Usage just run : java -jar %lzJar%
+echo Test tool Usage just run : java -jar %MobiusTestJarPath%
 
 exit /b 0
 

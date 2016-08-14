@@ -91,7 +91,7 @@ exit /b 0
     if "%~2" == "" for /F "tokens=*" %%a in ('echo %1 ^| lzmw -it ".*?([\w-]+)\s*$" -o "$1" -PAC ') do set appName=%%a
     rem Append args as name tail to be obvious when lookup on cluster web page    
     call %CommonToolDir%\bat\get-appendix-name-from %SparkOptions%
-    set submitArgs=--name %appName%-run-%PerfRunCount%__%AppNameAppendix% %SparkOptions% --exe SparkCLRPerf.exe %exeDir% %args%
+    set submitArgs=--name %appName%-run-%PerfRunCount%__%AppNameBySparkOptions% %SparkOptions% --exe SparkCLRPerf.exe %exeDir% %args%
     echo %date% %time% sparkclr-submit.cmd %submitArgs%
     echo %date% %time% sparkclr-submit.cmd %submitArgs% >> %logPath%
     call sparkclr-submit.cmd %submitArgs%  2>&1 | lzmw -it "tracking URL|final status" -PC -c -T 2 >> %logPath%
