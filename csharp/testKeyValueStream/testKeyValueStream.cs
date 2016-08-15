@@ -55,8 +55,8 @@ namespace testKeyValueStream
 
             Action<long> testOneStreaming = (testTime) =>
             {
-                var timesInfo = " test[" + testTime + "]-" + Options.TestTimes + " ";
-                Logger.LogInfo("============== Begin of " + timesInfo + " =========================");
+                var timesInfo = "test[" + testTime + "]-" + Options.TestTimes + " ";
+                Logger.LogInfo("============== Begin " + timesInfo + " =========================");
                 var ssc = new StreamingContext(sc, Options.BatchSeconds * 1000L);
                 ssc.Checkpoint(Options.CheckPointDirectory);
                 var lines = ssc.SocketTextStream(Options.Host, Options.Port, StorageLevelType.MEMORY_AND_DISK_SER);
@@ -78,10 +78,10 @@ namespace testKeyValueStream
                     (isSameLineCount ? ". LineCount same" : string.Format(". LineCount different : expected = {0}, but line count = {1}", Options.LineCount, sum.LineCount));
 
                 Logger.LogInfo("oldSum = {0}, newSum = {1}, sum = {2}", oldSum, newSum, sum);
-                Logger.LogInfo("============= End of {0}, start from {1} , used {2} s. total cost {3} s. Reduced final sumCount : {4} {5}",
+                Logger.LogInfo("============= End {0}, start from {1} , used {2} s. total cost {3} s. Reduced final sumCount : {4} {5}",
                     timesInfo, startTime.ToString(TestUtils.MilliTimeFormat), (DateTime.Now - startTime).TotalSeconds,
                     (DateTime.Now - beginTime).TotalSeconds, sum.ToString(), message);
-                Logger.LogInfo($"End of {testTime} : {GetCurrentProcessInfo()}");
+                Logger.LogInfo($"End {timesInfo} : {GetCurrentProcessInfo()}");
             };
 
             for (var times = 0; times < Options.TestTimes; times++)

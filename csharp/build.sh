@@ -1,6 +1,5 @@
 #!/bin/bash
-
-ShellDir=$(dirname $0)
+ShellDir=$(cd $(dirname $0) && pwd)
 cd $ShellDir
 
 CppDll=NoCpp

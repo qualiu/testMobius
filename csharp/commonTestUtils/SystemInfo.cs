@@ -12,11 +12,10 @@ namespace CommonTestUtils
     {
         public static string GetCPUUsage()
         {
-            var cpuCounter = new PerformanceCounter();
-            cpuCounter.CategoryName = "Processor";
-            cpuCounter.CounterName = "% Processor Time";
-            cpuCounter.InstanceName = "_Total";
-            return cpuCounter.NextValue() + "%";
+            var cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+            cpuCounter.NextValue();
+            System.Threading.Thread.Sleep(1000);
+            return cpuCounter.NextValue().ToString("F2") + "%";
         }
 
         public static string GetAvailableRAM()

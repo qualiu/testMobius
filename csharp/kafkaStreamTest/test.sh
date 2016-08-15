@@ -1,5 +1,5 @@
 #!/bin/bash
-ShellDir=$(dirname $0)
+ShellDir=$(cd $(dirname $0) && pwd)
 if [ ! -e "$SPARKCLR_HOME" ]; then
     export SPARKCLR_HOME=$ShellDir/../../../build/runtime
 fi

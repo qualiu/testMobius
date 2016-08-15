@@ -50,25 +50,31 @@ namespace CommonTestUtils
         {
             get
             {
-                return $"sizeof(int) = {sizeof(int)}, sizeof(long) = {sizeof(long)}, Is64BitOperatingSystem = {Environment.Is64BitOperatingSystem}"
-                    + $", Is64BitProcess = {Environment.Is64BitProcess}, OSVersion = {Environment.OSVersion}, MachineName = {Environment.MachineName}"
-                    + $", Processors = {Environment.ProcessorCount}"
-                    + $", CPU usage = {SystemInfo.GetCPUUsage()}, Available Memory = {SystemInfo.GetAvailableRAM()}"
-                    ;
+                var info = new StringBuilder();
+                info.Append($"sizeof(int) = {sizeof(int)}, sizeof(long) = {sizeof(long)}, Is64BitOperatingSystem = {Environment.Is64BitOperatingSystem}");
+                info.Append($", Is64BitProcess = {Environment.Is64BitProcess}, OSVersion = {Environment.OSVersion}, MachineName = {Environment.MachineName}");
+                info.Append($", Processors = {Environment.ProcessorCount}. ");
+                info.Append(GetCurrentProcessInfo());
+                return info.ToString();
             }
         }
 
-        public static string GetCurrentProcessInfo(bool withUsedTimeInfo = true)
+        public static string GetCurrentProcessInfo(bool withProcessMemoryInfo = true)
         {
             var process = Process.GetCurrentProcess();
             var info = new StringBuilder($"Current Process : ");
-            info.Append($"Id = {process.Id}, PrivateMemorySize64 = {process.PrivateMemorySize64}, VirtualMemorySize64 = {process.VirtualMemorySize64}");
-            if (withUsedTimeInfo)
+            info.Append($"Id = {process.Id}");
+
+            info.Append($", CPU usage = {SystemInfo.GetCPUUsage()}, Available Memory = {SystemInfo.GetAvailableRAM()}");
+
+            if (withProcessMemoryInfo)
             {
+                info.Append($", PrivateMemorySize64 = {process.PrivateMemorySize64}, VirtualMemorySize64 = {process.VirtualMemorySize64}");
                 info.Append($", TotalProcessorTime = {process.TotalProcessorTime}, UserProcessorTime = {process.UserProcessorTime}");
                 info.Append($", PagedMemorySize64 = {process.PagedMemorySize64}, NonpagedSystemMemorySize64 = {process.NonpagedSystemMemorySize64}");
                 info.Append($", PeakPagedMemorySize64 = {process.PeakPagedMemorySize64}, PeakVirtualMemorySize64 = {process.PeakVirtualMemorySize64}");
             }
+
             return info.ToString();
         }
     }

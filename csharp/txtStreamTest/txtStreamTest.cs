@@ -50,7 +50,7 @@ namespace TxtStreamTest
             for(var k=1; k <= testTimes; k++)
             {
                 StartOneTest(pathPattern, k, testTimes);
-                Logger.LogInfo($"End of test[{k}]-{testTimes} : {GetCurrentProcessInfo()}");
+                Logger.LogInfo($"End test[{k}]-{testTimes} : {GetCurrentProcessInfo()}");
             }
 
             Logger.LogInfo($"Finished all tests, testTimes = {testTimes}, used time = {(DateTime.Now - beginTime).Seconds} s = {DateTime.Now - beginTime}, read data = {pathPattern}.");

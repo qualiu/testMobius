@@ -30,8 +30,10 @@ if "%~1" == "" (
     exit /b 5
 )
 
-call %CommonToolDir%\bat\check-exist-path.bat "%MobiusCodeRoot%" MobiusCodeRoot || exit /b 1
-call %CommonToolDir%\set-local-sparkCLR-env.bat %MobiusCodeRoot% || exit /b 1
+if "%SPARK_HOME%" == "" (
+    call %CommonToolDir%\bat\check-exist-path.bat %MobiusCodeRoot% MobiusCodeRoot || exit /b 1
+    call %CommonToolDir%\set-local-sparkCLR-env.bat %MobiusCodeRoot% || exit /b 1
+)
 
 call %CommonToolDir%\bat\check-exist-path.bat %SourceSocketExe% || exit /b 1
 call %CommonToolDir%\bat\check-exist-path.bat %SPARK_HOME%\bin\spark-submit.cmd || exit /b 1

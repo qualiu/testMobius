@@ -1,5 +1,5 @@
 #!/bin/bash
-ShellDir=$(dirname $0)
+ShellDir=$(cd $(dirname $0) && pwd)
 for g in $(find $ShellDir -type d -name bin); do
   rm -rf "$g"
 done
