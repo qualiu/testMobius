@@ -51,7 +51,7 @@ namespace CommonTestUtils
             get
             {
                 var info = new StringBuilder();
-                info.Append($"sizeof(int) = {sizeof(int)}, sizeof(long) = {sizeof(long)}, Is64BitOperatingSystem = {Environment.Is64BitOperatingSystem}");
+                info.Append($"sizeof(int) = {sizeof(int)}, sizeof(long) = {sizeof(long)}, IntPtr.Size = {IntPtr.Size}, Is64BitOperatingSystem = {Environment.Is64BitOperatingSystem}");
                 info.Append($", Is64BitProcess = {Environment.Is64BitProcess}, OSVersion = {Environment.OSVersion}, MachineName = {Environment.MachineName}");
                 info.Append($", Processors = {Environment.ProcessorCount}. ");
                 info.Append(GetCurrentProcessInfo());
