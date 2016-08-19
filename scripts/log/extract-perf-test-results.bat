@@ -4,6 +4,11 @@ if /I "%~1" == "" goto :ShowUsage & exit /b 5
 if /I "%~1" == "-h" goto :ShowUsage & exit /b 0
 if /I "%~1" == "--help" goto :ShowUsage & exit /b 0
 
+set ShellDir=%~dp0
+if %ShellDir:~-1%==\ set ShellDir=%ShellDir:~0,-1%
+set CommonToolDir=%ShellDir%\..\..\tools
+call %CommonToolDir%\set-common-dir-and-tools.bat
+
 ::for /F "tokens=*" %f in ('lzmw -rp D:\mobius\perfBenchLogs -it "Execution time for" -f stdout -l -PAC ^| lzmw -x \ -o / -PAC ') do @lzmw -p %f -it "Execution time for" -PAC | lzmw -it ".*?Execution time for (\w+\S+).*?(Median)\s*=\s*(\d+\s*\w*).*" -o "$1 = $3" -PAC | lzmw -t "\s*[\r\n]\s*" -o "\t" -S -PAC | lzmw -S -t "^.*$" -o "%f\t$0" -PAC | lzmw -it "\S*(application\w+)\S*" -o "$1" -PAC
 
 set PerfLogPath=%1
