@@ -6,6 +6,8 @@
 )
 
 set MOBIUS_CODE_ROOT=%1
+rem Change to absolute path/full path if it's relative path
+for %%a in ( %MOBIUS_CODE_ROOT% ) do set "MOBIUS_CODE_ROOT=%%~$PATH:a"
 set OVERWRITE_ENV=%2
 
 call %~dp0\bat\check-exist-path.bat %MOBIUS_CODE_ROOT%\build\tools "mobius build tools directory" || exit /b 1
