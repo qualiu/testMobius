@@ -9,4 +9,6 @@
     echo Example-filter-directory : %0 %%CD%% --nd "^(softwares|logs|data|target|bin|obj|Debug|Release)$" -r -R
     exit /b 5
 )
-%~dp0..\lzmw -it "^(\s*@\s*echo)\s+on\b" -o "$1 off" -f "\.(bat|cmd)$" -p %1 %*
+
+rem first argument must be the path, just like above examples.
+%~dp0..\lzmw -it "^(\s*@\s*echo)\s+on\b" -o "$1 off" -f "\.(bat|cmd)$" -p %*

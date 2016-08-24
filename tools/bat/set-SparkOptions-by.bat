@@ -28,3 +28,7 @@ if not "%spark.app.name%" == "" (
 echo %SparkOptions% | findstr /I /R "\s*--name[^a-z0-9_-]" >nul || set SparkOptions=%SparkOptions% %appNameOption%
 echo Current SparkOptions=%SparkOptions% | lzmw -PA -ie "([\w\.]*\.\w*mobius\w*\.[\w\.]*)|SparkOption\w*|(?:=)\w+|\s+\d+\w{0,2}(\s+|$)" -t "((--name))\s+(((\S+)))" -a
 echo.
+
+for /F "tokens=*" %%a in ('echo !SparkOptions! ^| lzmw -it ".*--jars\s+(\S+).*" -o "$1" -PAC ^| lzmw -it "\s*,\s*" -o "\n" -PAC ') do (
+    if not exist %%a echo Not exist jar : %%a | lzmw -PA -it ".*"
+)
