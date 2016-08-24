@@ -67,9 +67,16 @@ namespace kafkaStreamTest
             offsetsRange = GetOffsetRanges(Options);
             Logger.LogInfo($"offsetsRange[{offsetsRange.Count}] = {string.Join(", ", offsetsRange.Select(kv => $"{kv.Key} = {kv.Value}")) } ");
 
-            if (currentTimes == 1 && Options.DeleteCheckPointDirectory && !string.IsNullOrWhiteSpace(Options.CheckPointDirectory))
+            if (Options.DeleteCheckPointDirectory && !string.IsNullOrWhiteSpace(Options.CheckPointDirectory))
             {
-                TestUtils.DeleteDirectory(Options.CheckPointDirectory);
+                if (currentTimes == 1)
+                {
+                    TestUtils.DeleteDirectory(Options.CheckPointDirectory);
+                }
+                else
+                {
+                    Logger.LogInfo("test[{0}] : not delete CheckPointDirectory : {1}", currentTimes, Options.CheckPointDirectory);
+                }
             }
         }
 

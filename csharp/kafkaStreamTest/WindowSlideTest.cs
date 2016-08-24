@@ -51,7 +51,7 @@ namespace kafkaStreamTest
             for (var k = 0; options.TestTimes <= 0 || k < options.TestTimes; k++)
             {
                 var beginTime = DateTime.Now;
-                Logger.LogInfo("begin test[{0}]-{1}", k + 1, options.TestTimes > 0 ? options.TestTimes.ToString() : "infinite");
+                Logger.LogInfo("begin test[{0}]-{1} , sparkContext = {2}", k + 1, options.TestTimes > 0 ? options.TestTimes.ToString() : "infinite", sparkContext.Value);
                 var streamingContext = StreamingContext.GetOrCreate(options.CheckPointDirectory,
                 () =>
                 {

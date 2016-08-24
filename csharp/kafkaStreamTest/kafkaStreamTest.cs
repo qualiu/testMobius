@@ -59,7 +59,7 @@ namespace kafkaStreamTest
                 var sparkContext = new Lazy<SparkContext>(() => new SparkContext(new SparkConf().SetAppName(type.Name)));
                 var beginTime = DateTime.Now;
                 Logger.LogInfo($"Begin test[{t}]-{testTimes} of {type.Name}");
-                kafkaTest.Run(sparkContext, t + 1, testTimes);
+                kafkaTest.Run(sparkContext, t, testTimes);
                 var usedTime = DateTime.Now - beginTime;
                 Logger.LogInfo($"End test[{t}]-{testTimes} of {type.Name}, used time = {usedTime.TotalSeconds} s = {usedTime} . SumCount : {SumCountStatic.GetStaticSumCount().ToString()}.");
                 Logger.LogInfo($"End test[{t}]-{testTimes} of {type.Name} : {GetCurrentProcessInfo()}");

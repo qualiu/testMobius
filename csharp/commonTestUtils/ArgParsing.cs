@@ -34,7 +34,7 @@ namespace CommonTestUtils
                 {
                     parseOK = true;
                     var argCount = 0;
-                    options.OutArgs((name, value) => Logger.LogDebug("args[{0}] : {1} = {2}", ++argCount, name, value));
+                    options.OutArgs((name, value) => Logger.LogInfo("args[{0}] : {1} = {2}", ++argCount, name, value));
                 }
             }
             catch (Exception ex)
