@@ -44,9 +44,10 @@ namespace testKeyValueStream
                 + " checkpointDirectory = " + Options.CheckPointDirectory + ", is-array-test = " + Options.IsArrayValue);
 
             var prefix = ExeName + (Options.IsArrayValue ? "-array" + (Options.IsUnevenArray ? "-uneven" : "-even") : "-single");
-            var sc = new SparkContext(new SparkConf().SetAppName(prefix));
 
             var beginTime = DateTime.Now;
+
+            var sc = new SparkContext(new SparkConf().SetAppName(prefix));
 
             Action<long> testOneStreaming = (testTime) =>
             {

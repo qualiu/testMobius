@@ -27,6 +27,16 @@ object TestUtil {
     MilliFormat.format(new Date())
   }
 
+  def getMemoryInfo(): String = {
+    val GB: Double = 1024 * 1024 * 1024
+    val runtime = Runtime.getRuntime
+    val format = "%.2f"
+    s"Used Memory = ${format.format((runtime.totalMemory - runtime.freeMemory) / GB)} GB" +
+      s", Free Memory = ${format.format(runtime.freeMemory / GB)} GB" +
+      s", Total Memory = ${format.format(runtime.totalMemory / GB)} GB" +
+      s", Max Memory = ${format.format(runtime.maxMemory / GB)} GB"
+  }
+
   def ArrayToText[T](arrayName: String, array: Array[T], takeMaxElementCount: Int = 9): String = {
     if (array == null) {
       s"${arrayName}[] = null"

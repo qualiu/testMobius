@@ -134,7 +134,7 @@ namespace kafkaStreamTest
         {
             if (Options.RunningSeconds > 0)
             {
-                streamingContext.AwaitTerminationOrTimeout(Options.RunningSeconds * 1000);
+                streamingContext.AwaitTerminationOrTimeout(TimeSpan.FromSeconds(Options.RunningSeconds));
             }
             else
             {

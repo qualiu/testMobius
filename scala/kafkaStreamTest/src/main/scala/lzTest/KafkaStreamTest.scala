@@ -1,6 +1,7 @@
 package lzTest
 
 import java.io.File
+
 import kafka.serializer.{DefaultDecoder, StringDecoder}
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat
 import org.apache.spark.SparkContext
@@ -44,23 +45,24 @@ object KafkaStreamTest extends LogBase {
   private lazy val logger = LoggerFactory.getLogger(this.getClass.getCanonicalName.toString)
 
   def main(args: Array[String]) {
-
     ArgParser4J.parse(args)
     log(s"batchSeconds = ${Args4Kafka.batchSeconds} s, windowSeconds = ${Args4Kafka.windowSeconds} s. slideSeconds = ${Args4Kafka.slideSeconds} s, checkpointDirectory = ${Args4Kafka.checkPointDirectory}")
-    if (Args4Kafka.deleteCheckDirectory) {
+    for (k <- 1 to Args4Kafka.testTimes) {
+      startOneTest(k)
+    }
+  }
+
+  def startOneTest(testTime: Int): Unit = {
+    logger.info(s"Begin test[${testTime}]-${Args4Kafka.testTimes} : ${TestUtil.getMemoryInfo()}")
+    if (Args4Kafka.deleteCheckDirectoryTimes >= testTime) {
       TestUtil.tryDelete(new File(Args4Kafka.checkPointDirectory))
     }
+
     val prefix = KafkaStreamTest.getClass.getCanonicalName + "-"
-    logger.info("lzdbg : ------- begin to test siphon ------------------")
-    if (Args4Kafka.deleteCheckDirectory) {
-      TestUtil.tryDelete(new File(Args4Kafka.checkPointDirectory))
-    }
     val beginTime: java.util.Date = new Date()
     val sparkConf = new SparkConf().setAppName(this.getClass.getCanonicalName.toString)
     var sc = new SparkContext(sparkConf)
 
-    logger.info("lzdbg : Created streaming context")
-    logger.info("lzdbg : creating kafka stream")
     val kafkaParams = Map[String, String](
       "group.id" -> Args4Kafka.groupId,
       "metadata.broker.list" -> Args4Kafka.brokerList,
@@ -72,63 +74,35 @@ object KafkaStreamTest extends LogBase {
       "zookeeper.connect" -> Args4Kafka.zookeeper,
       "zookeeper.connection.timeout.ms" -> "1000"
     )
-    //val kafkaParams = Map("metadata.broker.list" -> "localhost:9092,anotherhost:9092")
 
-    //    val offsetRanges = Array(
-    //      OffsetRange(Args4Kafka.topic, Args4Kafka.partition, Args4Kafka.fromOffset, Args4Kafka.untilOffset)
-    //    )
-
-    sc.setCheckpointDir(Args4Kafka.checkPointDirectory)
-    logger.info("lzdbg : method2 : try map streaming")
-    val ssc = new StreamingContext(sc, Seconds(Args4Kafka.batchSeconds))
-    //    val stream = KafkaUtils.createStream(ssc, kafkaParams, topicMap, StorageLevel.MEMORY_AND_DISK_SER)
-    //    val rdd = stream.map(_._2)
-    //    //rdd.saveAsTextFiles(header + "stream-lines", "txt")
-    //    var lineNumber = 0
-    //    var total_count = 0
-    //    rdd.map { msgLine => {
-    //        lineNumber += 1
-    //        println("lzdebg : println rdd-lines[" + lineNumber + "] : " + msgLine)
-    //        logger.info("lzdbg : log rdd-lines[" + lineNumber + "] : " + msgLine)
-    //        //val dataArr: Array[String] = msgLine.split(",")
-    //        //("msgLine[" + lineNumber + "] : " + msgLine, 1)
-    //        (msgLine, 1)
-    //      }
-    //    }.print()
-
-    //val stream = KafkaUtils.createRDD(sc, kafkaParams, offsetRange)
-    //    val rdd = KafkaUtils.createRDD[String, String, StringDecoder, StringDecoder](sc, kafkaParams, offsetRanges)
-    //    rdd.foreach(println)
-    //    //.foreach( println(s"read line : key = ${_}"))
-
-    //    val stream = KafkaUtils.createDirectStream[String, String, StringDecoder,StringDecoder](ssc, kafkaParams, Set("test")) //.flatMap(line => line._2)
-    //    stream.foreachRDD { rdd =>
-    //      rdd.foreachPartition(partitionOfRecords => {
-    //        partitionOfRecords.foreach(pair => {
-    //          println(s"pair key = ${pair._1}, value = ${pair._2}")
-    //        })
-    //      })
-    //    }
-
-    val lines = KafkaUtils.createDirectStream[String, String, StringDecoder, StringDecoder](ssc, kafkaParams, Set(Args4Kafka.topic)).map(line => line._2) //.flatMap(line => line._2)
-    val pairs = lines.map(line => new ParseKeyValueArray().parse(line))
-    val reducedStream = pairs.reduceByKeyAndWindow(
-      (a, b) => new SumReduceHelper(Args4Kafka.checkArray).SumArray(a, b),
-      (a, b) => new SumReduceHelper(Args4Kafka.checkArray).InverseSumArray(a, b), Seconds(Args4Kafka.windowSeconds), Seconds(Args4Kafka.slideSeconds))
     val sumCount = new SumCount
-    ForEachRDD("test-kafka-RDD", reducedStream, sumCount, prefix)
+    //sc.setCheckpointDir(Args4Kafka.checkPointDirectory)
+    val streamingContext = StreamingContext.getActiveOrCreate(Args4Kafka.checkPointDirectory, () => {
+      val ssc = new StreamingContext(sc, Seconds(Args4Kafka.batchSeconds))
+      ssc.checkpoint(Args4Kafka.checkPointDirectory)
+      val lines = KafkaUtils.createDirectStream[String, String, StringDecoder, StringDecoder](ssc, kafkaParams, Set(Args4Kafka.topic)).map(line => line._2) //.flatMap(line => line._2)
+      val pairs = lines.map(line => new ParseKeyValueArray().parse(line))
+      val reducedStream = pairs.reduceByKeyAndWindow(
+        (a, b) => new SumReduceHelper(Args4Kafka.checkArray).SumArray(a, b),
+        (a, b) => new SumReduceHelper(Args4Kafka.checkArray).InverseSumArray(a, b), Seconds(Args4Kafka.windowSeconds), Seconds(Args4Kafka.slideSeconds))
+      ForEachRDD("test-kafka-RDD", reducedStream, sumCount, prefix)
+      ssc
+    })
 
-    ssc.start()
-    logger.info("lzdbg : started, awaitTermination() for test")
+    streamingContext.start()
+    //logger.debug("lzdbg : started, awaitTermination() for test")
     if (Args4Kafka.runningSeconds > 0) {
-      ssc.awaitTerminationOrTimeout(Args4Kafka.runningSeconds * 1000)
+      streamingContext.awaitTerminationOrTimeout(Args4Kafka.runningSeconds * 1000)
     } else {
-      ssc.awaitTermination()
+      streamingContext.awaitTermination()
     }
 
-    log(s"============= end of test start from ${TestUtil.MilliFormat.format(beginTime)} , used " +
-      s"${(new Date().getTime - beginTime.getTime) / 1000.0} s. total cost ${(new Date().getTime - beginTime.getTime) / 1000.0} s."
-      + s" reduced final sumCount = { ${sumCount} }")
+    log(s"End test[${testTime}]-${Args4Kafka.testTimes} : used time = " +
+      s"${(new Date().getTime - beginTime.getTime) / 1000.0} s. total cost = ${(new Date().getTime - beginTime.getTime) / 1000.0} s."
+      + s" reduced final sumCount = { ${sumCount} }"
+      + s" ${TestUtil.getMemoryInfo()}"
+    )
+    sc.stop()
   }
 
   def ForEachRDD[V](title: String, reducedStream: DStream[Tuple2[String, V]], sumCount: SumCount, prefix: String, suffix: String = ".txt"): Unit = {

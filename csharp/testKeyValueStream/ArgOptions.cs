@@ -34,7 +34,7 @@ namespace testKeyValueStream
         [ArgShortcut("t"), ArgDescription("test times"), ArgDefaultValue(1)]
         public int TestTimes { get; set; }
 
-        [ArgShortcut("I"), ArgDescription("Interval seconds between tests"), ArgDefaultValue(0), ArgRange(0, int.MaxValue)]
+        [ArgShortcut("i"), ArgDescription("Interval seconds between tests"), ArgDefaultValue(0), ArgRange(0, int.MaxValue)]
         public int TestIntervalSeconds { get; set; }
 
         [ArgShortcut("c"), ArgDefaultValue("checkDir"), ArgExample("checkDir", "check point directory")]

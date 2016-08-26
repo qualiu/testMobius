@@ -60,11 +60,14 @@ object Args4Kafka {
   @Option4J(name = "-t", usage = "test times")
   var testTimes: Int = 1
 
+  @Option4J(name = "-i", usage = "test interval seconds")
+  var testIntervalSeconds: Int = 0
+
   @Option4J(name = "-c", usage = "check poInt directory")
   var checkPointDirectory: String = "checkDir"
 
-  @Option4J(name = "-d", usage = "delete check poInt directory at first")
-  var deleteCheckDirectory: Boolean = false
+  @Option4J(name = "-d", usage = "times to delete check poInt directory before each test")
+  var deleteCheckDirectoryTimes: Int = 0
 
   @Option4J(name = "-m", usage = "method name, such as reduceByKeyAndWindow")
   var methodName: String = "reduceByKeyAndWindow"
@@ -112,7 +115,7 @@ object Args4Kafka {
     println(s"${header} runningSeconds = ${runningSeconds}")
     println(s"${header} testTimes = ${testTimes}")
     println(s"${header} checkPointDirectory = ${checkPointDirectory}")
-    println(s"${header} deleteCheckDirectory = ${deleteCheckDirectory}")
+    println(s"${header} deleteCheckDirectoryTimes = ${deleteCheckDirectoryTimes}")
     println(s"${header} methodName = ${methodName}")
     println(s"${header} elementCount = ${elementCount}")
     println(s"${header} saveTxtDirectory = ${saveTxtDirectory}")
