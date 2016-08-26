@@ -41,17 +41,19 @@ namespace kafkaStreamTest
     {
         public override void Run(Lazy<SparkContext> sparkContext, int currentTimes, int totalTimes)
         {
-            PrepareToRun(currentTimes);
+            DeleteCheckPointDirectory(currentTimes);
 
             var options = Options as WindowSlideTestOptions;
             var allBeginTime = DateTime.Now;
 
             var topicList = new List<string>(options.Topics.Split(";,".ToArray()));
 
+            ParseKafkaParameters();
+
             for (var k = 0; options.TestTimes <= 0 || k < options.TestTimes; k++)
             {
                 var beginTime = DateTime.Now;
-                Logger.LogInfo("begin test[{0}]-{1} , sparkContext = {2}", k + 1, options.TestTimes > 0 ? options.TestTimes.ToString() : "infinite", sparkContext.Value);
+                //Logger.LogInfo("begin test[{0}]-{1} , sparkContext = {2}", k + 1, options.TestTimes > 0 ? options.TestTimes.ToString() : "infinite", sparkContext.Value);
                 var streamingContext = StreamingContext.GetOrCreate(options.CheckPointDirectory,
                 () =>
                 {

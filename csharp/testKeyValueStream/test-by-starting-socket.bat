@@ -20,7 +20,7 @@ set AllArgs=%*
 if "%~1" == "" (
     echo No parameter, Usage as following, run : %MobiusTestExePath%
     call %MobiusTestExePath%
-    echo Example parameters : -p 9112 -e 1 -r 30 -b 1 -w 3 -s 3 -n 50 -c d:\tmp\checkDir -d 1 
+    echo Example parameters : -p 9112 -e 1 -r 30 -b 1 -w 5 -s 1 -n 50 -c d:\tmp\checkDir -d 1   2^>^&1  ^| lzmw -it "exception|\b(begin|end).{1,5}test|finished all|used time|args.\d+" -e "\bmemory|\d+\.?\d*\s*[MG]B" -P
     echo Parameters like host, port and validation are according to source socket tool : %SourceSocketExe%
     echo Test usage just run : %MobiusTestExePath%
     exit /b 5

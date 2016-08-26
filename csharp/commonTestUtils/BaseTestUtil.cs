@@ -59,11 +59,11 @@ namespace CommonTestUtils
             }
         }
 
-        public static string GetCurrentProcessInfo(bool withProcessMemoryInfo = true)
+        public static string GetCurrentProcessInfo(bool withProcessMemoryInfo = true, string header = "Current Process : ")
         {
             var process = Process.GetCurrentProcess();
-            var info = new StringBuilder($"Current Process : ");
-            info.Append($"Id = {process.Id}");
+            var info = new StringBuilder(header);
+            info.Append($"PID = {process.Id}");
 
             info.Append($", CPU usage = {SystemInfo.GetCPUUsage()}, Available Memory = {SystemInfo.GetAvailableRAM()}");
 

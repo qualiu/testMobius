@@ -33,12 +33,13 @@ namespace kafkaStreamTest
     {
         public override void Run(Lazy<SparkContext> sparkContext, int currentTimes, int totalTimes)
         {
+            DeleteCheckPointDirectory(currentTimes);
+
             var options = Options as UnionTopicTestOptions;
 
             var streamingContext = StreamingContext.GetOrCreate(options.CheckPointDirectory,
                 () =>
                 {
-                    Logger.LogDebug($"sparkContext.Value = {sparkContext.Value}");
                     var ssc = new StreamingContext(sparkContext.Value, options.BatchSeconds * 1000L);
                     ssc.Checkpoint(options.CheckPointDirectory);
 

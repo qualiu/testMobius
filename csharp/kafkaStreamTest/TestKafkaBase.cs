@@ -18,11 +18,11 @@ namespace kafkaStreamTest
     public interface ITestKafkaBase
     {
         /// <summary>
-        /// Parse test times from arguments.
+        /// Parse test times and interval from arguments.
         /// </summary>
         /// <param name="args">command line arguments</param>
         /// <returns>if failed to parse return -1 to not run test.</returns>
-        int GetTestTimes(string[] args);
+        Tuple<int, int> GetTestTimesAndInterval(string[] args);
 
         void Run(Lazy<SparkContext> sparkContext, int currentTimes, int totalTimes);
     }
@@ -41,7 +41,7 @@ namespace kafkaStreamTest
 
         protected int runTimes = 1;
 
-        public virtual int GetTestTimes(string[] args)
+        public virtual Tuple<int, int> GetTestTimesAndInterval(string[] args)
         {
             var parsedOK = false;
             Options = ArgParser.Parse<ArgClass>(args, out parsedOK);
@@ -56,27 +56,27 @@ namespace kafkaStreamTest
                 Thread.Sleep(Options.WaitSecondsForAttachDebug * 1000);
             }
 
-            return parsedOK ? Options.TestTimes : -1;
+            return parsedOK ? new Tuple<int, int>(Options.TestTimes, Options.TestIntervalSeconds) : new Tuple<int, int>(-1, 0);
         }
 
-        protected void PrepareToRun(int currentTimes)
+        protected void ParseKafkaParameters()
         {
             kafkaParams = GetKafkaParameters(Options);
             Logger.LogInfo($"kafkaParams[{kafkaParams.Count}] = {string.Join(", ", kafkaParams.Select(kv => $"{kv.Key} = {kv.Value}")) } ");
 
             offsetsRange = GetOffsetRanges(Options);
             Logger.LogInfo($"offsetsRange[{offsetsRange.Count}] = {string.Join(", ", offsetsRange.Select(kv => $"{kv.Key} = {kv.Value}")) } ");
+        }
 
-            if (Options.DeleteCheckPointDirectory && !string.IsNullOrWhiteSpace(Options.CheckPointDirectory))
+        /// <summary>
+        /// Check and delete checkpoint directory
+        /// </summary>
+        /// <param name="currentTimes">current test time number</param>
+        protected void DeleteCheckPointDirectory(int currentTimes)
+        {
+            if (Options.DeleteCheckPointDirectoryTimes >= currentTimes && !string.IsNullOrWhiteSpace(Options.CheckPointDirectory))
             {
-                if (currentTimes == 1)
-                {
-                    TestUtils.DeleteDirectory(Options.CheckPointDirectory);
-                }
-                else
-                {
-                    Logger.LogInfo("test[{0}] : not delete CheckPointDirectory : {1}", currentTimes, Options.CheckPointDirectory);
-                }
+                TestUtils.DeleteDirectory(Options.CheckPointDirectory);
             }
         }
 

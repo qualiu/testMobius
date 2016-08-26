@@ -29,7 +29,7 @@ echo Current SparkOptions=%SparkOptions% | lzmw -PA -ie "([\w\.]*\.\w*mobius\w*\
 echo.
 
 set /a jarCount=0
-for /F "tokens=*" %%a in ('echo !SparkOptions! ^| lzmw -it ".*--jars\s+(\S+).*" -o "$1" -PAC ^| lzmw -it "\s*,\s*" -o "\n" -PAC ') do (
+for /F "tokens=*" %%a in ('echo !SparkOptions! ^| lzmw -it ".*--jars\s+(\S+).*" -o "$1" -PAC ^| lzmw -it "\s*,\s*" -o "\n" -PAC -a') do (
     set /a jarCount+=1
     if not exist %%a ( 
         echo Not exist jars[!jarCount!] : %%a | lzmw -PA -it ".*" 
@@ -39,5 +39,5 @@ for /F "tokens=*" %%a in ('echo !SparkOptions! ^| lzmw -it ".*--jars\s+(\S+).*" 
 )
 
 if %jarCount% LSS 1 (
-    echo Warn : No jars found after --jars , make sure not need jars or check again, like MobiusCodeRoot etc. | lzmw -PA -it "--jars|MobiusCodeRoot|(\S+)"
+    echo Warn : No jars found After-or-No --jars , make sure not need jars or check again, like MobiusCodeRoot etc. ^( current MobiusCodeRoot=%MobiusCodeRoot% ^) | lzmw -PA -it "--jars|MobiusCodeRoot|(\S+)"
 )
