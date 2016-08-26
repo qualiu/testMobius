@@ -114,7 +114,7 @@ namespace ReadWriteKafka
             var endTime = DateTime.Now;
             if (showMesage)
             {
-                Logger.Info($"Wrote {messages.Count()} messages into topic {topic}, used time = {endTime - beginTime}, connection used = {connectedTime - beginTime}");
+                Logger.Info($"Wrote {messages.Count()} messages into topic {topic}, used time = {(endTime - beginTime).TotalSeconds} s = {endTime - beginTime}, connection used = {connectedTime - beginTime}");
             }
 
             if (showReadCommand)
@@ -241,8 +241,8 @@ namespace ReadWriteKafka
                 Task.Run(readTopicRows).Wait();
             }
 
-            
-            Logger.InfoFormat($"Read {rowsRead} rows in topic {options.ReadTopic}, brokers = {options.BrokerList}, used time = {endTime - beginTime}, connection cost = {connectedTime - beginTime}");
+
+            Logger.InfoFormat($"Read {rowsRead} rows in topic {options.ReadTopic}, brokers = {options.BrokerList}, used time = {(endTime - beginTime).TotalSeconds} s = {endTime - beginTime}, connection cost = {connectedTime - beginTime}");
         }
     }
 }

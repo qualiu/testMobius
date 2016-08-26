@@ -34,11 +34,14 @@ namespace testKeyValueStream
         [ArgShortcut("t"), ArgDescription("test times"), ArgDefaultValue(1)]
         public int TestTimes { get; set; }
 
+        [ArgShortcut("I"), ArgDescription("Interval seconds between tests"), ArgDefaultValue(0), ArgRange(0, int.MaxValue)]
+        public int TestIntervalSeconds { get; set; }
+
         [ArgShortcut("c"), ArgDefaultValue("checkDir"), ArgExample("checkDir", "check point directory")]
         public string CheckPointDirectory { get; set; } // = Path.Combine(Path.GetTempPath(), "checkDir")
 
-        [ArgShortcut("d"), ArgDefaultValue(false), ArgDescription("delete check point directory at first")]
-        public bool DeleteCheckPointDirectory { get; set; }
+        [ArgShortcut("d"), ArgDefaultValue(0), ArgDescription("Times to delete check point directory before each test")]
+        public int DeleteCheckPointDirectoryTimes { get; set; }
 
         [ArgShortcut("m"), ArgDefaultValue("reduceByKeyAndWindow"), ArgDescription("method name, such as reduceByKeyAndWindow")]
         public string MethodName { get; set; }

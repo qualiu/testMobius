@@ -6,11 +6,9 @@
 )
 
 @set MobiusCodeRoot=%1
+@for %%a in ("%MobiusCodeRoot%") do set "MobiusCodeRoot=%%~dpa%%~nxa"
 @call %~dp0\..\tools\set-common-dir-and-tools.bat
 @call %CommonToolDir%\bat\check-exist-path.bat %MobiusCodeRoot% MobiusCodeRoot || exit /b 1
-@pushd %MobiusCodeRoot%
-@set MobiusCodeRoot=%CD%
-@popd
 
 @SetLocal EnableDelayedExpansion
 @set MobiusCodeRootReplace=%MobiusCodeRoot:\=\\%

@@ -13,7 +13,7 @@ call %MobiusTestRoot%\scripts\tool\warn-dll-exe-x64-x86.bat %MobiusTestExeDir%
 set SocketCodeDir=%MobiusTestRoot%\csharp\SourceLinesSocket
 for /f %%g in (' for /R %SocketCodeDir% %%f in ^(*.exe^) do @echo %%f ^| findstr /I /C:vshost /V ^| findstr /I /C:obj /V ') do set SourceSocketExe=%%g
 call %CommonToolDir%\bat\check-exist-path.bat %SourceSocketExe% SourceSocketExe || exit /b 1
-for %%a in ( %SourceSocketExe% ) do set "SourceSocketExeName=%%~nxa"
+for %%a in ("%SourceSocketExe%") do set "SourceSocketExeName=%%~dpa%%~nxa"
 
 if not defined SparkOptions set SparkOptions=--executor-cores 8 --driver-cores 8 --executor-memory 2G --driver-memory 2G --conf spark.mobius.CSharp.socketType=Rio
 

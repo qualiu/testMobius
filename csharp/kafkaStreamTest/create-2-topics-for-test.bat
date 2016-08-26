@@ -5,7 +5,8 @@ if %ShellDir:~-1%==\ set ShellDir=%ShellDir:~0,-1%
 set CommonToolDir=%ShellDir%\..\..\tools
 
 set KafkaToolDir=%ShellDir%\..\ReadWriteKafka
-for /f %%g in (' for /R %KafkaToolDir% %%f in ^(*.exe^) do @echo %%f ^| findstr /I /C:vshost /V ^| findstr /I /C:obj /V ') do set KafkaToolExe=%%g
+rem for /f %%g in (' for /R %KafkaToolDir% %%f in ^(*.exe^) do @echo %%f ^| findstr /I /C:vshost /V ^| findstr /I /C:obj /V ') do set KafkaToolExe=%%g
+for /f %%a in ('lzmw -rp %KafkaToolDir% -f "\.exe$" --nf ".vshost.exe|^CSharpWorker\.exe$" --nd "^obj$" --wt -l -PAC') do set "KafkaToolExe=%%~dpa%%~nxa"
 
 echo KafkaToolExe = %KafkaToolExe%
 call %CommonToolDir%\bat\check-exist-path.bat %KafkaToolExe% "kafka tool exe" || exit /b 1

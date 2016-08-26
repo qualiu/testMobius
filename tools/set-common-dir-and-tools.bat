@@ -36,4 +36,7 @@ if not exist %MobiusTestLogDir% md %MobiusTestLogDir%
 
 for /F "tokens=*" %%d in (' dir /A:D /B %MobiusTestSoftwareDir%\kafka* 2^>nul ') do set MobiusTestKafkaDir=%MobiusTestSoftwareDir%\%%d
 if not exist "%MobiusCodeRoot%" if exist %CommonToolDir%\..\..\csharp\SparkCLR.sln set MobiusCodeRoot=%CommonToolDir%\..\..
-for %%a in ( %MobiusCodeRoot% ) do set "MobiusCodeRoot=%%~$PATH:a"
+
+rem set absolute path if it's relative path
+if not [%MobiusCodeRoot%] == [] for %%a in ("%MobiusCodeRoot%") do set "MobiusCodeRoot=%%~dpa%%~nxa"
+rem if not [%MobiusCodeRoot%] == [] if %MobiusCodeRoot:~-1%==\ set MobiusCodeRoot=%MobiusCodeRoot:~0,-1%

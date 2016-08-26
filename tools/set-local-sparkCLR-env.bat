@@ -8,7 +8,9 @@ rem set SPARK_HOME HADOOP_HOME SPARKCLR_HOME
 
 set MOBIUS_CODE_ROOT=%1
 rem Change to absolute path/full path if it's relative path
-for %%a in ( %MOBIUS_CODE_ROOT% ) do set "MOBIUS_CODE_ROOT=%%~$PATH:a"
+for %%a in ("%MobiusCodeRoot%") do set "MOBIUS_CODE_ROOT=%%~dpa%%~nxa"
+if %MOBIUS_CODE_ROOT:~-1%==\ set MOBIUS_CODE_ROOT=%MobiusCodeRoot:~0,-1%
+
 set OVERWRITE_ENV=%2
 if "%OVERWRITE_ENV%" == "" set "OVERWRITE_ENV=1"
 

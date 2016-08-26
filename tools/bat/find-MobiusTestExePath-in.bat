@@ -5,10 +5,10 @@ if "%~1" == "" (
     exit /b 5
 )
 
-:: if [%MobiusTestExePath%]==[] for /f %%a in (' for /R %1 %%f in ^( *.exe ^) do @echo %%f ^| findstr /I /C:vshost /V ^| findstr /I /C:obj /V ') do set MobiusTestExePath=%%a
-if [%MobiusTestExePath%] == [] for /f %%a in ('lzmw -rp %1 -f "\.exe$" --nf ".vshost.exe|^CSharpWorker\.exe$" --nd "^obj$" --wt -l -PAC') do set "MobiusTestExePath=%%a"
+if [%MobiusTestExePath%] == [] for /f %%a in ('lzmw -rp %1 -f "\.exe$" --nf ".vshost.exe|^CSharpWorker\.exe$" --nd "^obj$" --wt -l -PAC') do set "MobiusTestExePath=%%~dpa%%~nxa"
 if not [%MobiusTestExePath%] == [] (
-    for %%a in ( %MobiusTestExePath% ) do set "MobiusTestExeDir=%%~dpa"
+    for %%a in ("%MobiusTestExePath%") do set "MobiusTestExeDir=%%~dpa"
     if not [!MobiusTestExeDir!] == [] if !MobiusTestExeDir:~-1!==\ set "MobiusTestExeDir=!MobiusTestExeDir:~0,-1!"
-    for %%a in ( %MobiusTestExePath% ) do set "MobiusTestExeName=%%~nxa"
+    for %%a in ("%MobiusTestExePath%") do set "MobiusTestExeName=%%~nxa"
+    for %%a in ("%MobiusTestExePath%") do set "MobiusTestExePath=%%~dpa%%~nxa"
 )

@@ -13,7 +13,7 @@ echo ### You can set spark.app.name to avoid default or add MobiusTestAppHead / 
 call %~dp0\show-TestExeVar.bat
 if "%SPARK_HOME%" == ""  (
     if "%MobiusCodeRoot%" == "" (
-        echo Not set SPARK_HOME , if run in local mode, please set SPARKCLR_HOME + SPARK_HOME + HADOOP_HOME or just MobiusCodeRoot | lzmw -PA -it "(.*)"
+        echo Warn : Not set SPARK_HOME , if run in local mode, please set SPARKCLR_HOME + SPARK_HOME + HADOOP_HOME or just MobiusCodeRoot | lzmw -PA -it "(.*)"
     ) else (
         echo If run in local mode and not set SPARKCLR_HOME + SPARK_HOME + HADOOP_HOME, will use MobiusCodeRoot : %MobiusCodeRoot% | lzmw -PA -ie "(.*)"
     )
