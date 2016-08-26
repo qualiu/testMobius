@@ -11,11 +11,11 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <!--scala version must be 2.10.4 for spark-1.6.1-->
-        <scala.majorVersion>2.11</scala.majorVersion>
-        <scala.minorVersion>.7</scala.minorVersion>
-        <spark.version>1.6.1</spark.version>
+        <scala.majorVersion>2.10</scala.majorVersion>
+        <scala.minorVersion>.4</scala.minorVersion>
         <scala.version>${scala.majorVersion}${scala.minorVersion}</scala.version>
+        <spark.majorVersion>1.6</spark.majorVersion>
+        <spark.version>1.6.2</spark.version>
     </properties>
 
     <repositories>
@@ -48,14 +48,6 @@
             <version>${spark.version}</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.scala-lang/scala-reflect -->
-        <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-reflect</artifactId>
-            <version>${scala.version}</version>
-            <!--<version>2.11.7</version>-->
-        </dependency>
-
         <!-- https://mvnrepository.com/artifact/org.apache.spark/spark-streaming_2.10 -->
         <dependency>
             <groupId>org.apache.spark</groupId>
@@ -66,7 +58,7 @@
         <dependency>
             <groupId>org.scalaj</groupId>
             <artifactId>scalaj-collection_${scala.majorVersion}</artifactId>
-            <version>1.6</version>
+            <version>${spark.majorVersion}</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/args4j/args4j -->
@@ -83,17 +75,13 @@
         <sourceDirectory>src/main/scala</sourceDirectory>
         <!--<testSourceDirectory>src/test/scala</testSourceDirectory>-->
         <plugins>
-            <!-- the Maven compiler plugin will compile Java source files -->
-            <!-- the Maven Scala plugin will compile Scala source files -->
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
-                <version>3.2.2</version>
                 <executions>
                     <execution>
                         <goals>
                             <goal>compile</goal>
-                            <goal>testCompile</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -102,10 +90,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
                     <encoding>UTF-8</encoding>
                     <compilerArguments>
                         <extdirs>${project.build.directory}/lib</extdirs>
@@ -113,11 +98,9 @@
                 </configuration>
             </plugin>
 
-            <!-- 打包jar文件时，配置manifest文件，加入lib包的jar依赖 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>2.6</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -156,16 +139,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-
-            <!--<plugin>-->
-            <!--<groupId>org.apache.maven.plugins</groupId>-->
-            <!--<artifactId>maven-resources-plugin</artifactId>-->
-            <!--<version>2.6</version>-->
-            <!--<configuration>-->
-            <!--<encoding>UTF-8</encoding>-->
-            <!--</configuration>-->
-            <!--</plugin>-->
 
             <!--use command : mvn assembly:assembly-->
             <plugin>

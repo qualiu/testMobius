@@ -21,7 +21,7 @@ object ArgParserApacheCLI {
   val runningSeconds = new CmdOption("r", "runningSeconds", true, "running seconds")
   val testTimes = new CmdOption("t", "testTimes", true, "test times")
   val checkPointDirectory = new CmdOption("c", "checkPointDirectory", true, "check point directory")
-  val deleteCheckDirectory = new CmdOption("d", "deleteCheckDirectory", true, "delete check point directory at first")
+  val deleteCheckDirectoryTimes = new CmdOption("d", "deleteCheckDirectoryTimes", 0, "times to delete check point directory before each test")
   val methodName = new CmdOption("m", "methodName", true, "method name, such as reduceByKeyAndWindow")
   val isArrayValue = new CmdOption("a", "isArrayValue", true, "is value type array")
   val isUnevenArray = new CmdOption("u", "isUnevenArray", true, "is uneven array value")
@@ -60,11 +60,14 @@ object Args4Kafka {
   @Option4J(name = "-t", usage = "test times")
   var testTimes: Int = 1
 
-  @Option4J(name = "-c", usage = "check poInt directory")
+  @Option4J(name = "-i", usage = "test interval seconds between two tests")
+  var testIntervalSeconds: Int = 0
+
+  @Option4J(name = "-c", usage = "check point directory")
   var checkPointDirectory: String = "checkDir"
 
-  @Option4J(name = "-d", usage = "delete check poInt directory at first")
-  var deleteCheckDirectory: Boolean = false
+  @Option4J(name = "-d", usage = "times to delete check point directory before each test")
+  var deleteCheckDirectoryTimes: Int = 0
 
   @Option4J(name = "-m", usage = "method name, such as reduceByKeyAndWindow")
   var methodName: String = "reduceByKeyAndWindow"
@@ -112,7 +115,7 @@ object Args4Kafka {
     println(s"${header} runningSeconds = ${runningSeconds}")
     println(s"${header} testTimes = ${testTimes}")
     println(s"${header} checkPointDirectory = ${checkPointDirectory}")
-    println(s"${header} deleteCheckDirectory = ${deleteCheckDirectory}")
+    println(s"${header} deleteCheckDirectoryTimes = ${deleteCheckDirectoryTimes}")
     println(s"${header} methodName = ${methodName}")
     println(s"${header} elementCount = ${elementCount}")
     println(s"${header} saveTxtDirectory = ${saveTxtDirectory}")
@@ -139,12 +142,7 @@ object ArgParser4J {
     }
     catch {
       case e: CmdLineException =>
-        // println(s"Error parsing args, exception : ${ex.getMessage}")
-        val start = e.getMessage().indexOf('"') + 1
-        val end = e.getMessage().lastIndexOf('"')
-        val wrongArgument = e.getMessage().substring(start, end)
-        System.err.println("Unknown argument: " + wrongArgument)
-        System.err.println("ant [options] [target [target2 [target3] ...]]")
+        System.err.println(e)
         parser.printUsage(System.out)
         println()
         throw e

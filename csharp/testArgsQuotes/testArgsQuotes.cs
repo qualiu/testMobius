@@ -57,7 +57,7 @@ namespace testArgsQuotes
             idx = 0;
             singleValueRDD.ForEach(kv => Log(string.Format("src-pair[{0}] : {1} = {2}", idx++, kv.Key, kv.Value)));
 
-            var sparkContext = new SparkContext(new SparkConf().SetAppName(typeof(testArgsQuotes).Name));
+            var sparkContext = new SparkContext(new SparkConf());
             var rdd = sparkContext.Parallelize(singleValueRDD);
             Log(string.Format("Main() rdd = {0}", rdd));
             var reduced = rdd.ReduceByKey((v1, v2) => v1 + v2);

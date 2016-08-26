@@ -21,7 +21,7 @@ object ArgParserApacheCLI {
   val runningSeconds = new CmdOption("r", "runningSeconds", true, "running seconds")
   val testTimes = new CmdOption("t", "testTimes", true, "test times")
   val checkPointDirectory = new CmdOption("c", "checkPointDirectory", true, "check point directory")
-  val deleteCheckDirectory = new CmdOption("d", "deleteCheckDirectory", true, "delete check point directory at first")
+  val deleteCheckDirectoryTimes = new CmdOption("d", "deleteCheckDirectoryTimes", 0, "dtimes to delete check point directory before each test")
   val methodName = new CmdOption("m", "methodName", true, "method name, such as reduceByKeyAndWindow")
   val isArrayValue = new CmdOption("a", "isArrayValue", true, "is value type array")
   val isUnevenArray = new CmdOption("u", "isUnevenArray", true, "is uneven array value")
@@ -57,11 +57,11 @@ object Args4Socket {
   @Option4J(name = "-t", usage = "test times")
   var testTimes: Int = 1
 
-  @Option4J(name = "-c", usage = "check poInt directory")
+  @Option4J(name = "-c", usage = "check point directory")
   var checkPointDirectory: String = "checkDir"
 
-  @Option4J(name = "-d", usage = "delete check poInt directory at first")
-  var deleteCheckDirectory: Boolean = false
+  @Option4J(name = "-d", usage = "times to delete check point directory before each test")
+  var deleteCheckDirectoryTimes: Int = 0
 
   @Option4J(name = "-m", usage = "method name, such as reduceByKeyAndWindow")
   var methodName: String = "reduceByKeyAndWindow"
@@ -93,7 +93,7 @@ object Args4Socket {
     println(s"${header} runningSeconds = ${runningSeconds}")
     println(s"${header} testTimes = ${testTimes}")
     println(s"${header} checkPointDirectory = ${checkPointDirectory}")
-    println(s"${header} deleteCheckDirectory = ${deleteCheckDirectory}")
+    println(s"${header} deleteCheckDirectoryTimes = ${deleteCheckDirectoryTimes}")
     println(s"${header} methodName = ${methodName}")
     println(s"${header} isArrayValue = ${isArrayValue}")
     println(s"${header} isUnevenArray = ${isUnevenArray}")

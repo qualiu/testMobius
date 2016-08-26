@@ -20,7 +20,8 @@ set AllArgs=%*
 if "%~1" == "" (
     echo No parameter, Usage as following, run : java -jar %MobiusTestJarPath%
     java -jar %MobiusTestJarPath%
-    echo Example parameter : -p 9486 -r 30 -b 1 -w 3 -s 3 -v 50 -c d:\tmp\checkDir -d
+    echo Example-1 : -p 9486 -r 30 -b 1 -w 3 -s 3 -v 50 -c d:\tmp\checkDir -d 1
+    echo Example-2 : -p 9486 -r 30 -b 1 -w 3 -s 3 -v 50 -c d:\tmp\checkDir -d 1   2^>^&1 ^| lzmw -it "exception|\b(begin|end).{1,5}test|finished all|used time|args.\d+" -e "\bmemory|\d+\.?\d*\s*[MG]B" -P
     exit /b 5
 )
 

@@ -9,11 +9,13 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <!--scala version must be 2.10.4 for spark-1.6.1-->
         <scala.majorVersion>2.10</scala.majorVersion>
-        <scala.minorVersion>.6</scala.minorVersion>
-        <spark.version>1.6.1</spark.version>
+        <scala.minorVersion>.4</scala.minorVersion>
         <scala.version>${scala.majorVersion}${scala.minorVersion}</scala.version>
+        <spark.majorVersion>1.6</spark.majorVersion>
+        <spark.version>1.6.2</spark.version>
+        <hadoop.majorVersion>2.6</hadoop.majorVersion>
+        <hadoop.verion>2.6.0</hadoop.verion>
     </properties>
 
     <repositories>
@@ -57,7 +59,7 @@
         <dependency>
             <groupId>org.scalaj</groupId>
             <artifactId>scalaj-collection_${scala.majorVersion}</artifactId>
-            <version>1.6</version>
+            <version>${spark.majorVersion}</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/args4j/args4j -->
@@ -77,13 +79,13 @@
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-client</artifactId>
-            <version>2.6.0</version>
+            <version>${hadoop.verion}</version>
             <!--<scope>compile</scope>-->
         </dependency>
 
         <dependency>
             <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka_2.10</artifactId>
+            <artifactId>kafka_${scala.majorVersion}</artifactId>
             <version>0.8.2.1</version>
             <scope>compile</scope>
         </dependency>
@@ -118,9 +120,6 @@
                 </executions>
                 <configuration>
                     <scalaVersion>${scala.version}</scalaVersion>
-                    <args>
-                        <arg>-target:jvm-1.7</arg>
-                    </args>
                 </configuration>
             </plugin>
 
@@ -172,8 +171,6 @@
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
                     <encoding>UTF-8</encoding>
                     <compilerArguments>
                         <extdirs>${project.build.directory}/lib</extdirs>
@@ -181,7 +178,6 @@
                 </configuration>
             </plugin>
 
-            <!-- 打包jar文件时，配置manifest文件，加入lib包的jar依赖 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -196,20 +192,6 @@
                 </configuration>
             </plugin>
 
-
-            <!--<plugin>-->
-            <!--&lt;!&ndash;build-classpath&ndash;&gt;-->
-            <!--&lt;!&ndash;copy-dependencies&ndash;&gt;-->
-            <!--&lt;!&ndash;copy&ndash;&gt;-->
-            <!--<artifactId>maven-dependency-plugin</artifactId>-->
-            <!--<configuration>-->
-            <!--<outputDirectory>${project.build.directory}/lib</outputDirectory>-->
-            <!--<excludeTransitive>false</excludeTransitive>-->
-            <!--<stripVersion>true</stripVersion>-->
-            <!--</configuration>-->
-            <!--</plugin>-->
-
-            <!--&lt;!&ndash; 拷贝依赖的jar包到lib目录 &ndash;&gt;-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -228,67 +210,16 @@
                             </outputDirectory>
                         </configuration>
                     </execution>
-
-                    <!--<execution>-->
-                    <!--<id>copy</id>-->
-                    <!--<phase>package</phase>-->
-                    <!--<goals>-->
-                    <!--<goal>copy-dependencies</goal>-->
-                    <!--</goals>-->
-                    <!--<configuration>-->
-                    <!--&lt;!&ndash;<includeScope>compile</includeScope>&ndash;&gt;-->
-                    <!--<excludeGroupIds>lzTest.Siphon</excludeGroupIds>-->
-                    <!--<stripVersion>false</stripVersion>-->
-                    <!--<outputDirectory>-->
-                    <!--${project.build.directory}/lib-->
-                    <!--</outputDirectory>-->
-                    <!--</configuration>-->
-                    <!--</execution>-->
-
-                    <!--<execution>-->
-                    <!--<id>copy-myjar</id>-->
-                    <!--<phase>package</phase>-->
-                    <!--<goals>-->
-                    <!--<goal>copy-dependencies</goal>-->
-                    <!--</goals>-->
-                    <!--<configuration>-->
-                    <!--&lt;!&ndash;<includeScope>compile</includeScope>&ndash;&gt;-->
-                    <!--<includeGroupIds>lzTest.Siphon</includeGroupIds>-->
-                    <!--<stripVersion>true</stripVersion>-->
-                    <!--<outputDirectory>-->
-                    <!--${project.build.directory}/lib-->
-                    <!--</outputDirectory>-->
-                    <!--</configuration>-->
-                    <!--</execution>-->
-
                 </executions>
             </plugin>
-            <!-- 解决资源文件的编码问题 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>2.3</version>
+                <version>3.0.1</version>
                 <configuration>
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
-            <!-- 打包source文件为jar文件 -->
-            <!--<plugin>-->
-            <!--<artifactId>maven-source-plugin</artifactId>-->
-            <!--<version>2.1</version>-->
-            <!--<configuration>-->
-            <!--<attach>true</attach>-->
-            <!--<encoding>UTF-8</encoding>-->
-            <!--</configuration>-->
-            <!--<executions>-->
-            <!--<execution>-->
-            <!--<phase>compile</phase>-->
-            <!--<goals>-->
-            <!--<goal>jar</goal>-->
-            <!--</goals>-->
-            <!--</execution>-->
-            <!--</executions>-->
-            <!--</plugin>-->
 
         </plugins>
     </build>

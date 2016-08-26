@@ -20,7 +20,7 @@ set AllArgs=%*
 if "%~1" == "" (
     echo No parameter, Usage as following, run : %MobiusTestExePath%
     call %MobiusTestExePath%
-    echo Example parameters : -p 9112 -e 1 -r 30 -b 1 -w 3 -s 3 -n 50 -c d:\tmp\checkDir -d 1 
+    echo Example parameters : -p 9112 -e 1 -r 30 -b 1 -w 5 -s 1 -n 50 -c d:\tmp\checkDir -d 1   2^>^&1  ^| lzmw -it "exception|\b(begin|end).{1,5}test|finished all|used time|args.\d+" -e "\bmemory|\d+\.?\d*\s*[MG]B" -P
     echo Parameters like host, port and validation are according to source socket tool : %SourceSocketExe%
     echo Test usage just run : %MobiusTestExePath%
     exit /b 5
@@ -38,7 +38,7 @@ set LineCount=60
 call :ExtractArgs %*
 
 rem use cmd /k if you want to keep the window 
-start cmd /c "%SourceSocketExe%" -p %Port% -n %LineCount% -r 999 -q 0 -z 9
+start cmd /c "%SourceSocketExe%" -p %Port% -n %LineCount% -r 0 -q 0 -z 9
 
 :: SPARK_JAVA_OPTS="-verbose:gc -XX:-UseGCOverheadLimit -XX:+UseCompressedOops -XX:-PrintGCDetails -XX:+PrintGCTimeStamps $SPARK_JAVA_OPTS -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/home/xujingwen/ocdc/spark-1.4.1-bin-hadoop2.6/`date +%m%d%H%M%S`.hprof"
 ::set extraJavaOptions=--conf "\"spark.executor.extraJavaOptions=-XX:-UseGCOverheadLimit -Xms2048M -Xmx2048M -verbose:gc -XX:+UseCompressedOops -Xloggc:kvGC.log -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCDateStamps -XX:ErrorFile=kvError.log -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=kv-heap-dump.hprof\""
@@ -49,7 +49,7 @@ call %SPARKCLR_HOME%\scripts\sparkclr-submit.cmd %SparkOptions% %extraJavaOption
 popd
 
 for %%a in ( %SourceSocketExe% ) do set "SourceSocketExeName=%%~nxa"
-call pskill -it "%SourceSocketExeName%.*%Port%|%MobiusTestExeName%.*%Port%" 2>nul 2>nul
+call pskill -it "%SourceSocketExeName%.*%Port%|%MobiusTestExeName%.*%Port%" 2>nul
 echo ======================================================
 call %MobiusTestRoot%\scripts\log\show-local-logs-by-test-exe-dir.bat %MobiusTestExeDir%
 echo More source socket usages just run : %SourceSocketExe%

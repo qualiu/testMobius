@@ -53,11 +53,13 @@
         <maven.version>3.3.9</maven.version>
         <sbt.project.name>StreamingTest</sbt.project.name>
         <test.java.home>${java.home}</test.java.home>
-        <scala.binary.version>2.10.6</scala.binary.version>
+        <scala.majorVersion>2.10</scala.majorVersion>
+        <scala.minorVersion>.4</scala.minorVersion>
+        <scala.version>${scala.majorVersion}${scala.minorVersion}</scala.version>
         <test.exclude.tags></test.exclude.tags>
 
         <!-- Modules that copy jars to the build directory should do so under this location. -->
-        <!--<jars.target.dir>${project.build.directory}/lzTest-${scala.binary.version}/jars</jars.target.dir>-->
+        <!--<jars.target.dir>${project.build.directory}/lzTest-${scala.version}/jars</jars.target.dir>-->
         <jars.target.dir>${project.build.directory}/lzTest-common/jars</jars.target.dir>
         <!-- Allow modules to enable / disable certain build plugins easily. -->
         <build.testJarPhase>prepare-package</build.testJarPhase>

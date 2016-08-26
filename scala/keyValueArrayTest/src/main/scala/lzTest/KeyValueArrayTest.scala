@@ -18,11 +18,6 @@ import scala.reflect.io.Path
   *
   */
 object KeyValueArrayTest extends LogBase {
-
-  //  def Log(message: String): Unit = {
-  //    println(s"${TestUtil.NowMilli} ${this.getClass.getCanonicalName} $message")
-  //  }
-
   def ToDuration(seconds: Double): Duration = {
     if (seconds < 1) {
       Milliseconds((1000 * seconds).toInt)
@@ -35,32 +30,38 @@ object KeyValueArrayTest extends LogBase {
     //val jar = new File(KeyValueArrayTest.getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath())
     ArgParser4J.parse(args)
     log(s"will connect ${Args4Socket.host}:${Args4Socket.port}, batchSeconds = ${Args4Socket.batchSeconds} s, windowSeconds = ${Args4Socket.windowSeconds} s. slideSeconds = ${Args4Socket.slideSeconds} s, checkpointDirectory = ${Args4Socket.checkPointDirectory}, is-array-test = ${Args4Socket.isArrayValue}")
-    if (Args4Socket.deleteCheckDirectory) {
-      TestUtil.tryDelete(new File(Args4Socket.checkPointDirectory))
-    }
     val prefix = KeyValueArrayTest.getClass.getCanonicalName + (if (Args4Socket.isArrayValue) (if (Args4Socket.isUnevenArray) "-uneven" else "-even") + "-array" else "-single") + "-"
-    val conf = new SparkConf().setAppName(prefix + "app")
+    val conf = new SparkConf()
     val sc = new SparkContext(conf)
     val beginTime = new Date()
     val countList = new ArrayBuffer[SumCount]()
 
-    for (times <- 0 until Args4Socket.testTimes) {
-      val sumCount = testOneStreaming(times + 1, sc, beginTime, prefix)
+    for (times <- 1 to Args4Socket.testTimes) {
+      val sumCount = startOneTest(times, sc, beginTime, prefix)
       countList += sumCount
+      if (Args4Socket.testIntervalSeconds > 0 && times < Args4Socket.testTimes) {
+        log(s"Will sleep testIntervalSeconds = ${Args4Socket.testIntervalSeconds} s ...")
+        Thread.sleep(Args4Socket.testIntervalSeconds * 1000)
+      }
     }
 
-    log(s"finished all test , total test times = ${Args4Socket.testTimes} , used time = ${(new Date().getTime - beginTime.getTime) / 1000.0} s"
-      + s", countList[${countList.length}] = ${if (countList.length < 9) countList.mkString(",") else countList.take(9).mkString(", ") + ", ... , " + countList.last}")
+    log(s"Finished all tests of ${this.getClass.getCanonicalName}, test times = ${Args4Socket.testTimes} , used time = ${(new Date().getTime - beginTime.getTime) / 1000.0} s"
+      + s", countList[${countList.length}] = ${if (countList.length < 9) countList.mkString(",") else countList.take(9).mkString(", ") + ", ... , " + countList.last}"
+      + s"; ${TestUtil.getMemoryInfo()} "
+    )
   }
 
-  def testOneStreaming(testTime: Long, sc: SparkContext, beginTime: Date, prefix: String): SumCount = {
-    val timesInfo = " test[" + testTime + "]-" + Args4Socket.testTimes + " "
-    log("============== begin of " + timesInfo + " =========================")
+  def startOneTest(testTime: Long, sc: SparkContext, beginTime: Date, prefix: String): SumCount = {
+    val timesInfo = "[" + testTime + "]-" + Args4Socket.testTimes + " "
+    log(s"Begin test${timesInfo} : ${TestUtil.getMemoryInfo()}")
+    if (Args4Socket.deleteCheckDirectoryTimes >= testTime) {
+      TestUtil.tryDelete(new File(Args4Socket.checkPointDirectory))
+    }
     val ssc = new StreamingContext(sc, Seconds(Args4Socket.batchSeconds))
     ssc.checkpoint(Args4Socket.checkPointDirectory)
     val lines = ssc.socketTextStream(Args4Socket.host, Args4Socket.port, StorageLevel.MEMORY_AND_DISK_SER)
     val sumCount = new SumCount
-    StartOneTest(sc, lines, sumCount, prefix)
+    testKeyValuePairRDD(sc, lines, sumCount, prefix)
 
     ssc.start()
     val startTime = new Date()
@@ -73,12 +74,11 @@ object KeyValueArrayTest extends LogBase {
       else s". Validation failed : expect ${Args4Socket.validateCount} but line count = ${sumCount.lineCount}"
     }
 
-    val stopBegin = new Date()
-    ssc.stop() //ssc.stop(stopSparkContext = true, stopGracefully = true)
-    log(s"stopped ${timesInfo} used time = ${(new Date().getTime - stopBegin.getTime) / 1000} s.")
-    log(s"============= end of ${timesInfo}, start from ${TestUtil.MilliFormat.format(startTime)} , used " +
-      s"${(new Date().getTime - startTime.getTime) / 1000.0} s. total cost ${(new Date().getTime - beginTime.getTime) / 1000.0} s."
-      + s" reduced final sumCount = { ${sumCount} } ${validationMessage}")
+    ssc.stop(false)
+    log(s"End test${timesInfo}, used time = ${(new Date().getTime - startTime.getTime) / 1000.0} s. total cost ${(new Date().getTime - beginTime.getTime) / 1000.0} s."
+      + s" reduced final sumCount = { ${sumCount} } ${validationMessage}"
+      + s"; ${TestUtil.getMemoryInfo()}"
+    )
 
     if (!isValidateOK) {
       Args4Socket.print("Trace arg :")
@@ -87,7 +87,7 @@ object KeyValueArrayTest extends LogBase {
     sumCount
   }
 
-  def StartOneTest(sc: SparkContext, lines: DStream[String], sumCount: SumCount, prefix: String, suffix: String = ".txt"): Unit = {
+  def testKeyValuePairRDD(sc: SparkContext, lines: DStream[String], sumCount: SumCount, prefix: String, suffix: String = ".txt"): Unit = {
     val isByKey = Args4Socket.methodName.compareToIgnoreCase("reduceByKey") == 0
     if (!Args4Socket.isArrayValue) {
       val pairs = lines.map(line => new ParseKeyValue(0).parse(line))

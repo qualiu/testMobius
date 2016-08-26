@@ -24,7 +24,8 @@ set AllArgs=%*
 if "%~1" == "" (
     echo No parameter, Usage as following:
     java -jar %MobiusTestJarPath%
-    echo Example parameter : -p 9486 -r 30 -b 1 -w 3 -s 3 -v 50 -c d:\tmp\checkDir -d
+    echo Example-1 : -p 9486 -r 30 -b 1 -w 3 -s 3 -v 50 -c checkDir -d 1
+    echo Example-2 : -p 9486 -r 30 -b 1 -w 3 -s 3 -v 50 -c checkDir -d 1  2^>^&1 ^| lzmw -it "exception|\b(begin|end).{1,5}test|finished all|used time|args.\d+" -e "\bmemory|\d+\.?\d*\s*[MG]B" -P
     echo Parameters like host, port and validation are according to source socket tool : %SourceSocketExe%
     echo Source socket directory : %SocketCodeDir%
     exit /b 5
@@ -44,12 +45,12 @@ set ValidationLines=60
 call :ExtractArgs %*
 
 rem use cmd /k if you want to keep the window
-start cmd /c "%SourceSocketExe%" -p %Port% -n %ValidationLines%
+start cmd /c "%SourceSocketExe%" -p %Port% -n %ValidationLines% -r 0 -q 0 -z 9
 
 call %SPARK_HOME%\bin\spark-submit.cmd --class lzTest.KeyValueArrayTest %MobiusTestJarPath% %AllArgs%
 
 for %%a in ( %SourceSocketExe% ) do set "SourceSocketExeName=%%~nxa"
-call pskill -it "%SourceSocketExeName%.*%Port%|%MobiusTestJarName%.*%Port%" 2>nul 2>nul
+call pskill -it "%SourceSocketExeName%.*%Port%|%MobiusTestJarName%.*%Port%" 2>nul
 
 echo ======================================================
 echo More source socket usages just run : %SourceSocketExe%

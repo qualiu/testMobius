@@ -54,17 +54,20 @@ namespace kafkaStreamTest
 
         #region Application settings
 
-        [ArgShortcut("r"), ArgDescription("running seconds"), ArgDefaultValue(30)]
+        [ArgShortcut("r"), ArgDescription("Running seconds"), ArgDefaultValue(30)]
         public int RunningSeconds { get; set; }
 
-        [ArgShortcut("d"), ArgDefaultValue(false), ArgDescription("delete check point directory at first")]
-        public bool DeleteCheckPointDirectory { get; set; }
+        [ArgShortcut("d"), ArgDefaultValue(0), ArgDescription("Times to delete check point directory before each test")]
+        public int DeleteCheckPointDirectoryTimes { get; set; }
 
         [ArgDefaultValue(0), ArgDescription("Wait seconds for user to attach this process and debug.")]
         public int WaitSecondsForAttachDebug { get; set; }
 
         [ArgShortcut("t"), ArgDescription("Test times"), ArgDefaultValue(1)]
         public int TestTimes { get; set; }
+
+        [ArgShortcut("i"), ArgDescription("Interval seconds between tests"), ArgDefaultValue(0), ArgRange(0, int.MaxValue)]
+        public int TestIntervalSeconds { get; set; }
 
         #endregion
 

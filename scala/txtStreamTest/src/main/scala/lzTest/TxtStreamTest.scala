@@ -21,14 +21,16 @@ import scala.reflect.io.Path
   *
   */
 object TxtStreamTest extends LogBase {
+
   def main(args: Array[String]): Unit = {
     val jar = new File(TxtStreamTest.getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath())
     var textDirectory = ""
     var fileType = "*.csv"
-    var needCallMap = true
+    var testTimes = 1
+    var testIntervalSeconds = 0
 
     if (args.length < 1) {
-      println(s"Usage   : ${jar} file-directory  [file-type: default = ${fileType}]  [need-call-map() : default = ${needCallMap}]")
+      println(s"Usage   : ${jar} file-directory  [file-type:${fileType}] [Test-times: 1] [Test-interval: 0 seconds]")
       println(s"Example : ${jar} D:\\cosmos  *.csv")
       return
     }
@@ -36,24 +38,29 @@ object TxtStreamTest extends LogBase {
     val parser = new ArgsParser()
     textDirectory = parser.getArgValue(args, "textDirectory", textDirectory, false)
     fileType = parser.getArgValue(args, "fileType", fileType)
-    needCallMap = parser.getArgValue(args, "needCallMap", needCallMap)
+    testTimes = parser.getArgValue(args, "testTimes", testTimes)
+    testIntervalSeconds = parser.getArgValue(args, "testIntervalSeconds", testIntervalSeconds)
 
     //val pathPattern = Paths.get(textDirectory.replaceFirst("[\\\\/]+$", "")).toString + "/" + fileType
     val pathPattern = textDirectory.replaceFirst("[\\\\/]+$", "") + "/" + fileType
+    val beginForAll = new Date
 
-    log(s"Will read text stream : ${pathPattern}")
-    var beginTime = new Date
-
-    val conf = new SparkConf().setAppName(this.getClass.getCanonicalName)
-    val sc = new SparkContext(conf)
-    //val mappingRDD = sc.textFile(pathPattern).map(line => line).cache()
-    var mappingRDD = sc.textFile(pathPattern)
-    if (needCallMap) {
-      mappingRDD = mappingRDD.map(line => line)
+    for (times <- 1 to testTimes) {
+      log(s"Begin test[${times}]-${testTimes} : will read text stream : ${pathPattern} ; ${TestUtil.getMemoryInfo()}")
+      val beginTime = new Date
+      val conf = new SparkConf()
+      val sc = new SparkContext(conf)
+      var mappingRDD = sc.textFile(pathPattern).map(line => line).cache()
+      log(s"End test[${times}]-${testTimes} : RDD count = ${mappingRDD.count()} , used time = ${(new Date().getTime - beginTime.getTime) / 1000.0} s. ${TestUtil.getMemoryInfo()}")
+      mappingRDD.unpersist()
+      sc.stop()
+      if (testIntervalSeconds > 0 && times < testTimes) {
+        Thread.sleep(testIntervalSeconds * 1000)
+      }
     }
-    mappingRDD = mappingRDD.cache()
-    log(s"RDD count = ${mappingRDD.count()}")
-    mappingRDD.unpersist()
-    log(s"Finished ${this.getClass.getCanonicalName} , used time = ${(new Date().getTime - beginTime.getTime) / 1000.0} s, needCallMap = ${needCallMap}, read = ${pathPattern}")
+    log(s"Finished all test of ${this.getClass.getCanonicalName}, test times = ${testTimes}, interval = ${testIntervalSeconds} s."
+      + s"used time = ${(new Date().getTime - beginForAll.getTime) / 1000.0} s, read = ${pathPattern}"
+      + s"; ${TestUtil.getMemoryInfo()}"
+    )
   }
 }

@@ -46,7 +46,7 @@ class AppTest {
 
     //val siphonEnv: SiphonEnvironment = null
     //println("done65")
-    val sparkConf = new SparkConf().setAppName("AppTest")
+    val sparkConf = new SparkConf()
     //val jsc = new JavaStreamingContext(sparkConf, new Duration(200))
     //val sc = new StreamingContext(sparkConf, Seconds(2))
     val sc = new StreamingContext(sparkConf, new Duration(200))
