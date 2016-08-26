@@ -23,11 +23,11 @@ if not exist "%logFile%" (
 )
 
 set logFileDir=
-for %%a in ( %logFile% ) do set "logFileDir=%%~dpa"
+for %%a in ("%logFile%") do set "logFileDir=%%~dpa"
 if %logFileDir:~-1%==\ set "logFileDir=%logFileDir:~0,-1%"
 
-for %%a in ( %logFile% ) do set "logFileName=%%~na"
-for %%a in ( %logFile% ) do set "logFileExtension=%%~xa"
+for %%a in ("%logFile%") do set "logFileName=%%~na"
+for %%a in ("%logFile%") do set "logFileExtension=%%~xa"
 
 if "!saveLog!" == "" (    
     set saveLog=%logFileDir%\%logFileName%-%DefaultNamePart%%logFileExtension%

@@ -29,9 +29,9 @@ dir /A:D /B %IputExePath% >nul 2>nul && set "IsInputDirectory=1" || set "IsInput
 
 if "%IsInputDirectory%" == "1" for /F "tokens=*" %%a in ('dir /S /B %IputExePath%\CSharpWorker.exe') do set IputExePath=%%a
 
-for %%a in ( %IputExePath% ) do set "IputExeDir=%%~dpa"
+for %%a in ("%IputExePath%") do set "IputExeDir=%%~dpa"
 if %IputExeDir:~-1%==\ set IputExeDir=%IputExeDir:~0,-1%
-for %%a in ( %IputExePath% ) do set "IputExeName=%%~nxa"
+for %%a in ("%IputExePath%") do set "IputExeName=%%~nxa"
 
 rem echo IputExeDir = '%IputExeDir%' , IputExeName = '%IputExeName%', IputExePath=%IputExeDir%\%IputExeName%
 set IputExePathReplace=%IputExePath:\=\\%

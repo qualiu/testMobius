@@ -10,5 +10,5 @@
     exit /b 5
 )
 
-rem first argument must be the path, just like above examples.
+:: first argument must be the path, just like above examples.
 %~dp0..\lzmw -it "^(\s*@\s*echo)\s+on\b" -o "$1 off" -f "\.(bat|cmd)$" -p %*
