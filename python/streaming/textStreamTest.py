@@ -1,5 +1,4 @@
 from __future__ import print_function
-
 import sys, os, re, time
 from datetime import datetime
 from random import random

@@ -27,8 +27,8 @@ if "%~1" == "" (
     echo Example-1 : %0 WindowSlideTest -Topics test -d 1 -w 5 -s 1 | lzmw -PA -ie "\s+\w+Test"
     echo Example-2 : %0 WindowSlideTest -d 1 -Topics test  2^>^&1  ^| lzmw -it "exception|\b(begin|end).{1,5}test|finished all|used time|args.\d+" -e "\bmemory|\d+\.?\d*\s*[MG]B" -P
     echo Example-3 : %0 UnionTopicTest -Topic1 id_count_1 -Topic2 id_count_2 | lzmw -PA -ie "\s+\w+Test"
-    echo You can start Kafka by : %CommonToolDir%\start-zookeeper-kafka.bat  and a topic named 'test' will be created and writed. | lzmw -PA -it "(?:create|write)\w*" -e "'test'"
-    echo You can create topic and write data for test, like : %ShellDir%\create-2-topics-for-test.bat | lzmw -PA -it "\b(?:create|write)\b"
+    echo You can start Kafka by : %CommonToolDir%\start-zookeeper-kafka.bat  and a topic named 'test' will be created and wrote. | lzmw -PA -it "(?:creat|wr[io]t)\w*" -e "'test'"
+    echo You can create topic and write data for test, like : %ShellDir%\create-2-topics-for-test.bat | lzmw -PA -it "\b(?:creat|wr[io]t)\w*\b"
     for /f %%a in ('lzmw -rp %ShellDir%\.. -d ReadWriteKafka -f "\.exe$" --nf ".vshost.exe|^CSharpWorker\.exe$" --nd "^obj$" --wt -l -PAC') do set "KafkaToolExe=%%~dpa%%~nxa"
     if not "!KafkaToolExe!" == "" echo You can read topic data, like : !KafkaToolExe! -ReadTopic id_count_1 | lzmw -PA -ie "\w+\.exe|\bread\b"
     exit /b 5

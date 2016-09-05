@@ -18,7 +18,7 @@ call %CommonToolDir%\set-common-dir-and-tools.bat
 for /F "tokens=*" %%a in (' hostname ') do set hostname=%%a
 
 if "%~1" == "" (
-    echo Usage  :  %0  PerfRunCount [SubmitTimes]  [NewPerfExeDir]       [OldPerfExeDir]            [MobiusJarDir]           [LogDir]               [LogName]
+    echo Usage  :  %0  PerfRunTimes [SubmitTimes]  [NewPerfExeDir]       [OldPerfExeDir]            [MobiusJarDir]           [LogDir]               [LogName]
     echo Example : %0  1             1            D:\mobius\new-test  D:\mobius\latest-master  d:\mobius\dependencies D:\mobius\perf-logs  perf--by-%USERNAME%--on-%hostname%.log
     echo To avoid default, you can set variables of the above and : OldPerfAppName NewPerfAppName JarOptions SparkOptions .
     echo Such as :
@@ -28,12 +28,12 @@ if "%~1" == "" (
     echo set NewPerfAppName=new-perf
     rem echo set MobiusJarDir=d:\mobius\perf-lz\dependencies
     echo set PerfTestData=hdfs:///perf/data/deletions/*
-    echo set PerfTestTmpDir=D:\Temp\TempDirForSpark
+    echo set PerfTmpDir=D:\Temp\TempDirForSpark
     echo set JustShowCmd=1 will just print the final command and not execute submitting.
     exit /b 5
 )
 
-set PerfRunCount=%1
+set PerfRunTimes=%1
 if not [%2] == [] (set "SubmitTimes=%2") else (set "SubmitTimes=1")
 if not [%3] == [] set NewPerfExeDir=%3
 if not [%4] == [] set OldPerfExeDir=%4
@@ -46,7 +46,7 @@ if [%OldPerfExeDir%] == [] set OldPerfExeDir=D:\msgit\orgMobius\csharp\Perf\Micr
 if [%MobiusJarDir%] == [] set MobiusJarDir=d:\mobius\perf-lz\dependencies
 if [%LogDir%] == [] set LogDir=D:\mobius\perf-logs
 if [%LogName%] == [] set LogName=perf--by-%USERNAME%--on-%hostname%.log
-if not defined PerfTestTmpDir set PerfTestTmpDir=D:\Temp\TempDirForSpark
+if not defined PerfTmpDir set PerfTmpDir=D:\Temp\TempDirForSpark
 if not defined PerfTestData set PerfTestData=hdfs:///perf/data/deletions/*
 
 rem JarOptions and EventOptions will not effect if defined SparkOptions
@@ -93,7 +93,7 @@ if "%OldPerfAppName%" == "%NewPerfAppName%" (
     set NewPerfAppName=%PerfExeName%-new
 )
 
-echo PerfRunCount = %PerfRunCount%, SubmitTimes = %SubmitTimes% | lzmw -PA -ie "\w+"
+echo PerfRunTimes = %PerfRunTimes%, SubmitTimes = %SubmitTimes% | lzmw -PA -ie "\w+"
 
 for /L %%k in (1,1,%SubmitTimes%) do (
     call :Submit_Dir_AppName %OldPerfExeDir% %OldPerfAppName%
@@ -104,14 +104,14 @@ for /L %%k in (1,1,%SubmitTimes%) do (
 exit /b 0
 
 :Submit_Dir_AppName
-    set args=%PerfTestTmpDir% %PerfRunCount% %PerfTestData%
+    set args=%PerfTmpDir% %PerfRunTimes% %PerfTestData%
     set exeDir=%1
     if not "%~2" == "" set appName=%2
     rem Use test exe directory name if not input appName
     if "%~2" == "" for /F "tokens=*" %%a in ('echo %1 ^| lzmw -it ".*?([\w-]+)\s*$" -o "$1" -PAC ') do set appName=%%a
     rem Append args as name tail to be obvious when lookup on cluster web page    
     call %CommonToolDir%\bat\get-appendix-name-from %SparkOptions%
-    set submitArgs=--name %appName%-run-%PerfRunCount%__%AppNameBySparkOptions% %SparkOptions% --exe SparkCLRPerf.exe %exeDir% %args%
+    set submitArgs=--name %appName%-run-%PerfRunTimes%__%AppNameBySparkOptions% %SparkOptions% --exe SparkCLRPerf.exe %exeDir% %args%
     echo.
     echo %date% %time% sparkclr-submit.cmd %submitArgs% | lzmw -PA -ie "([\w\.]*\.\w*mobius\w*\.[\w\.]*)|SparkOption\w*|(?:=)\w+|\s+\d+\w{0,2}(\s+|$)" -t "((--name))\s+(((\S+)))" -a
     if "%JustShowCmd%" == "1" exit /b 0
