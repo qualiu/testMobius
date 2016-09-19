@@ -14,7 +14,7 @@ if not [%5] == [] ( set LogDir=%5 ) else ( set "LogDir=D:\mobius\perf-logs" )
 if not [%6] == [] ( set LogName=%6 ) else ( set "LogName=perf--by-%USERNAME%--on-%hostname%.log" )
 set logPath=%LogDir%\%LogName%
 
-if not defined MobiusTestAppHead set MobiusTestAppHead=RunScala-%PerfRunTimes%
+if not defined MobiusTestAppHead set MobiusTestAppHead=Run-%PerfRunTimes%
 if not defined PerfTestData set PerfTestData=hdfs:///perf/data/deletions/*
 
 call %CommonToolDir%\set-common-dir-and-tools.bat
@@ -34,8 +34,8 @@ if not defined JarOptions (
     set JarOptions=--jars !JarOptions!
 )
 
-set SparkLocalOptions=--total-executor-cores 8 --executor-memory 8G %JarOptions%
-set SparkClusterOptions=--master yarn-cluster --total-executor-cores 50 --executor-memory 8G %JarOptions% %EventOptions%
+set SparkLocalOptions=--total-executor-cores 8 --executor-memory 8G %JarOptions% --conf spark.sql.warehouse.dir=file:///d:/tmp/perf-warehouse
+set SparkClusterOptions=--master yarn-cluster --total-executor-cores 50 --executor-memory 8G %JarOptions% %EventOptions% --conf spark.sql.warehouse.dir=file:///d:/tmp/perf-warehouse
 
 if defined SparkOptions (
     call %CommonToolDir%\bat\set-SparkOptions-by.bat %SparkOptions%

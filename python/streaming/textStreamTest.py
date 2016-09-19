@@ -22,7 +22,7 @@ if __name__ == "__main__":
     beginTime = time.time()
     
     sc = SparkContext(appName="text-stream-test-python")
-    rdd = sc.textFile(dataDir + "/*.csv").map(lambda line: line)
+    rdd = sc.textFile(dataPattern).map(lambda line: line)
     rdd.cache()
     print(str(datetime.now()) + " RDD count = "+ str(rdd.count()))
     rdd.unpersist()

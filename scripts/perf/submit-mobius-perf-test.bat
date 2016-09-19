@@ -36,8 +36,8 @@ if not defined JarOptions (
     set JarOptions=--jars !JarOptions!
 )
 
-set SparkLocalOptions=--total-executor-cores 8 --executor-memory 8G %JarOptions%
-set SparkClusterOptions=--master yarn-cluster --total-executor-cores 50 --executor-memory 8G %JarOptions% %EventOptions%
+set SparkLocalOptions=--total-executor-cores 8 --executor-memory 8G %JarOptions% --conf spark.sql.warehouse.dir=file:///d:/tmp/perf-warehouse
+set SparkClusterOptions=--master yarn-cluster --total-executor-cores 50 --executor-memory 8G %JarOptions% %EventOptions% --conf spark.sql.warehouse.dir=file:///d:/tmp/perf-warehouse
 
 if defined SparkOptions (
     call %CommonToolDir%\bat\set-SparkOptions-by.bat %SparkOptions%

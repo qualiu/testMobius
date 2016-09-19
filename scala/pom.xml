@@ -40,7 +40,7 @@
     <!--<packaging>pom</packaging>-->
 
     <modules>
-        <module>CommonUtil</module>
+        <!--<module>CommonUtil</module>-->
         <module>keyValueArrayTest</module>
         <module>kafkaStreamTest</module>
         <module>txtStreamTest</module>

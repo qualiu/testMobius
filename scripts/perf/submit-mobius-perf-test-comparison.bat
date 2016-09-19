@@ -71,7 +71,7 @@ if not defined SparkOptions (
     set SparkOptions=--total-executor-cores 100 --executor-memory 30G --driver-memory 32G
     set SparkOptions=--num-executors 100 --executor-cores 28 --executor-memory 30G --driver-memory 32G
     set SparkOptions=--num-executors 100 --executor-cores 28 --executor-memory 8G --driver-memory 12G
-    set SparkOptions=--master yarn-cluster !SparkOptions! %JarOptions% %EventOptions% 
+    set SparkOptions=--master yarn-cluster !SparkOptions! %JarOptions% %EventOptions% --conf spark.sql.warehouse.dir=file:///d:/tmp/perf-warehouse
 )
 
 for /F "tokens=*" %%a in ('echo !SparkOptions! ^| lzmw -it ".*--jars\s+(\S+).*" -o "$1" -PAC ^| lzmw -it "\s*,\s*" -o "\n" -PAC ') do (

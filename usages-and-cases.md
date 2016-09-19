@@ -58,7 +58,7 @@ build\Build.cmd
 ```
 ### 2.Build {testMobius}
 * Use the above Mobius code directory(`d:\msgit\revMobius`)
-* You can only build "release" 
+* You can build all types (by default without parameters) or build "release" only:
 ```
 d:\msgit\testMobius>
 csharp\update-MobiusCodeRoot-and-project-files.bat d:\msgit\revMobius
